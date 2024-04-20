@@ -1,0 +1,11 @@
+export enum RESPONSE_TYPE {
+  CHECK = 'CHECK',
+  RANK = 'RANK'
+}
+
+export enum ELECTION_TYPE {
+  YES_NO = "YES_NO",
+  RANKING = "RANKING",
+  PREFERENCE = "PREFERENCE",
+  FIRST_PAST = "FIRST_PAST"
+}

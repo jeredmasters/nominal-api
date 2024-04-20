@@ -1,0 +1,32 @@
+{
+  "port": "env(PORT)",
+  "settings": {
+    "loggerFormat": "tiny",
+    "session": {
+      "store": "@foal/typeorm",
+      "accessKeyId": "",
+      "secretAccessKey": ""
+    },
+    "aws": {
+      "region": ""
+    },
+    "disk": {
+      "driver": "local",
+      "local":{
+        "directory": "uploads"
+      },
+      "_s3": {
+        "bucket": "uploads"
+      }
+    }
+  },
+  "database": {
+    "type": "postgres",
+    "host": "env(DB_HOST)",
+    "port": "env(DB_PORT)",
+    "username": "env(DB_USER)",
+    "password": "env(DB_PASS)",
+    "database": "env(DB_NAME)",
+    "name": "env(DB_NAME)"
+  }
+}
