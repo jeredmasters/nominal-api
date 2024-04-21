@@ -9,23 +9,25 @@ import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { ApiTokenEntity } from "../api-token.repo/api-token.entity";
 import { EnrollmentEntity } from "../enrollment.repo/enrollment.entity";
 import { ResponseEntity } from "../response.repo/reponse.entity";
+import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
+import { AdminPermissionEntity } from "../admin-permissions.repo/admin-permission.entity";
 
-export enum EVENT_PRIMARY {
+export enum ADMIN_EVENT {
   DEBUG = "DEBUG",
-  OPEN_EMAIL_TOKEN = 'OPEN_EMAIL_TOKEN',
-  NEW_REPONSE = 'NEW_REPONSE',
-  UPDATE_RESPONSE = "UPDATE_RESPONSE"
+  ADMIN_LOGIN = 'ADMIN_LOGIN'
 }
 
-export interface IEventLog extends IUnsavedEventLog {
+export interface IAdminLog extends IUnsavedAdminLog {
   id: string;
   created_at: Date;
 }
 
-export interface IUnsavedEventLog extends IBaseUnsaved {
-  primary: EVENT_PRIMARY;
+export interface IUnsavedAdminLog extends IBaseUnsaved {
+  primary: ADMIN_EVENT;
   trigger?: string;
   meta?: any;
+  admin_user_id?: string;
+  admin_permission_id?: string;
   voter_id?: string;
   election_id?: string;
   email_token_id?: string;
@@ -36,8 +38,8 @@ export interface IUnsavedEventLog extends IBaseUnsaved {
   response_id?: string;
 }
 
-@Entity("event_log")
-export class EventLogEntity extends BaseEntity implements IEventLog {
+@Entity("admin_log")
+export class AdminLogEntity extends BaseEntity implements IAdminLog {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -45,13 +47,18 @@ export class EventLogEntity extends BaseEntity implements IEventLog {
   created_at: Date;
 
   @Column()
-  primary: EVENT_PRIMARY;
+  primary: ADMIN_EVENT;
 
   @Column({ nullable: true })
-  trigger?: string;
+  trigger: string;
 
-  @Column('jsonb', { nullable: true })
-  meta: any;
+  @Column('jsonb', { nullable: true }) admin_user_idadmin_user_id
+
+  @ForeignKey(AdminUserEntity, { nullable: true })
+  admin_user_id?: string;
+
+  @ForeignKey(AdminPermissionEntity, { nullable: true })
+  admin_permission_id?: string;
 
   @ForeignKey(VoterEntity, { nullable: true })
   voter_id?: string;

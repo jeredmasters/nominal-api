@@ -1,16 +1,16 @@
 import { Repository } from "typeorm";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
-import { ApiToken, IApiToken, IUnsavedApiToken } from "./api-token.entity";
+import { ApiTokenEntity, IApiToken, IUnsavedApiToken } from "./api-token.entity";
 
 export class ApiTokenRepository {
   getAll(): Promise<Array<IApiToken>> {
-    return ApiToken.find()
+    return ApiTokenEntity.find()
   }
   getById(id: string): Promise<IApiToken | null> {
-    return ApiToken.findOneBy({ id })
+    return ApiTokenEntity.findOneBy({ id })
   }
   getByPublicKey(public_key: string): Promise<IApiToken | null> {
-    return ApiToken.findOneBy({ public_key })
+    return ApiTokenEntity.findOneBy({ public_key })
   }
   async getByIdOrThrow(id: string): Promise<IApiToken> {
     const account = await this.getById(id);
@@ -30,6 +30,6 @@ export class ApiTokenRepository {
     if (!unsaved.created_at) {
       unsaved.created_at = new Date;
     }
-    return ApiToken.save(unsaved as any);
+    return ApiTokenEntity.save(unsaved as any);
   }
 }

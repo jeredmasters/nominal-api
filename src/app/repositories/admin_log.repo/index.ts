@@ -1,15 +1,15 @@
 import { ERROR_TYPE, InternalError } from "../../domain/error";
-import { EventLogEntity, IEventLog, IUnsavedEventLog } from "./event-log.entity";
+import { AdminLogEntity, IAdminLog, IUnsavedAdminLog } from "./admin-log.entity";
 
-export class EventLogRepository {
-  getAll(): Promise<Array<IEventLog>> {
-    return EventLogEntity.find()
+export class AdminLogRepository {
+  getAll(): Promise<Array<IAdminLog>> {
+    return AdminLogEntity.find()
   }
-  getById(id: string): Promise<IEventLog | null> {
-    return EventLogEntity.findOneBy({ id });
+  getById(id: string): Promise<IAdminLog | null> {
+    return AdminLogEntity.findOneBy({ id });
   }
 
-  async getByIdOrThrow(id: string): Promise<IEventLog> {
+  async getByIdOrThrow(id: string): Promise<IAdminLog> {
     const account = await this.getById(id);
     if (!account) {
       throw new InternalError({
@@ -23,10 +23,10 @@ export class EventLogRepository {
     return account;
   }
 
-  async save(unsaved: IUnsavedEventLog) {
+  async save(unsaved: IUnsavedAdminLog) {
     if (!unsaved.created_at) {
       unsaved.created_at = new Date;
     }
-    return EventLogEntity.save(unsaved as any);
+    return AdminLogEntity.save(unsaved as any);
   }
 }

@@ -8,6 +8,9 @@ import { CandidateRepository } from "../app/repositories/candidate.repo";
 import { VoterRepository } from "../app/repositories/voter.repo";
 import { EmailTokenRepository } from "../app/repositories/email-token.repo";
 import { EMAIL_TOKEN_ACTION, EMAIL_TOKEN_STATUS } from "../app/repositories/email-token.repo/email-token.entity";
+import { AdminUserRepository } from "../app/repositories/admin-user.repo";
+import { AdminPasscodeRepository } from "../app/repositories/admin-passcode.repo";
+import { PASSCODE_TYPE } from "../app/repositories/admin-passcode.repo/admin-passcode.entity";
 
 export async function main() {
     console.log("SEED")
@@ -21,6 +24,19 @@ export async function main() {
     const candidateRepo = serviceManager.get(CandidateRepository);
     const voterRepo = serviceManager.get(VoterRepository);
     const emailTokenRepo = serviceManager.get(EmailTokenRepository);
+    const adminUserRepo = serviceManager.get(AdminUserRepository);
+    const adminPasscodeRepo = serviceManager.get(AdminPasscodeRepository);
+
+    const adminUser = await adminUserRepo.save({
+        name: "Test Admin",
+        email: "admin@example.com"
+    })
+
+    const adminPasscode = await adminPasscodeRepo.save({
+        admin_user_id: adminUser.id,
+        type: PASSCODE_TYPE.PASSWORD,
+        value: "asdf1234"
+    })
 
     const org = await organisationRepo.save({
         label: "Test Org",
@@ -29,7 +45,7 @@ export async function main() {
     console.log(org)
 
     const election = await electionRepo.save({
-        label: "Test Election",
+        label: "Test ElectionEntity",
         organisation_id: org.id,
         type: ELECTION_TYPE.PREFERENCE
     })
@@ -44,8 +60,8 @@ export async function main() {
     ].map(candidateRepo.save))
 
     const voter = await voterRepo.save({
-        first_name: "Jered",
-        last_name: "Masters",
+        first_name: "Test",
+        last_name: "Voter",
         organisation_id: org.id
     })
 

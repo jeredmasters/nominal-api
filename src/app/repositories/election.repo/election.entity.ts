@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
-import { Organisation } from "../organisation.repo/organisation.entity";
+import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { IBaseUnsaved } from "../base";
 import { ELECTION_TYPE } from "../../const/election";
 
@@ -16,14 +16,14 @@ export interface IUnsavedElection extends IBaseUnsaved {
 }
 
 @Entity("elections")
-export class Election extends BaseEntity implements IElection {
+export class ElectionEntity extends BaseEntity implements IElection {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
   created_at: Date;
 
-  @ForeignKey(Organisation)
+  @ForeignKey(OrganisationEntity)
   organisation_id: string;
 
   @Column()

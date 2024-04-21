@@ -1,13 +1,13 @@
 import { Repository } from "typeorm";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
-import { Response, IResponse } from "./reponse.entity";
+import { ResponseEntity, IResponse } from "./reponse.entity";
 
 export class ResponseRepository extends Repository<Response> {
   getAll(): Promise<Array<IResponse>> {
-    return Response.find()
+    return ResponseEntity.find()
   }
   getById(id: string): Promise<IResponse | null> {
-    return Response.findOneBy({ id })
+    return ResponseEntity.findOneBy({ id })
   }
   async getByIdOrThrow(id: string): Promise<IResponse> {
     const response = await this.getById(id);

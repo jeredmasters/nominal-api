@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base";
+import { EmailTokenEntity } from "../email-token.repo/email-token.entity";
 
 export enum EMAIL_TOKEN_ACTION {
   LOGIN = "LOGIN",
@@ -16,39 +17,28 @@ export enum EMAIL_TOKEN_STATUS {
   DISABLED = "DISABLED"
 }
 
-export interface IEmailToken extends IUnsavedEmailToken {
+export interface IAdminUser extends IUnsavedAdminUser {
   id: string;
   created_at: Date;
 }
 
-export interface IUnsavedEmailToken extends IBaseUnsaved {
-  action: EMAIL_TOKEN_ACTION;
-  status: EMAIL_TOKEN_STATUS;
-  voter_id: string;
-  election_id?: string;
-  expirest_at?: Date;
+export interface IUnsavedAdminUser extends IBaseUnsaved {
+  name: string;
+  email: string;
+
 }
 
-@Entity("email_tokens")
-export class EmailTokenEntity extends BaseEntity implements IEmailToken {
+@Entity("admin_users")
+export class AdminUserEntity extends BaseEntity implements IAdminUser {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
   created_at: Date;
 
-  @ForeignKey(VoterEntity)
-  voter_id: string;
-
-  @ForeignKey(VoterEntity, { nullable: true })
-  election_id?: string;
+  @Column()
+  name: string;
 
   @Column()
-  action: EMAIL_TOKEN_ACTION;
-
-  @Column()
-  status: EMAIL_TOKEN_STATUS;
-
-  @Column({ nullable: true })
-  expirest_at?: Date;
+  email: string;
 }

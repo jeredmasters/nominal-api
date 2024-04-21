@@ -9,9 +9,10 @@ import {
 } from "@foal/core";
 
 // App
-import { ApiController } from "./app/controllers";
+import { ConsumerController } from "./app/controllers/consumer";
 import { dataSource } from "./db";
 import { DataSource } from "typeorm";
+import { AdminController } from "./app/controllers/admin";
 
 async function main() {
   await dataSource.initialize();
@@ -23,10 +24,15 @@ async function main() {
   Config.set('settings.multipartRequests.fileSizeLimit', '50mb')
   Config.set('settings.multipartRequests.fileNumberLimit', '10')
 
-  const app = await createApp(ApiController, { serviceManager });
+  const consumerApp = await createApp(ConsumerController, { serviceManager });
+  const adminApp = await createApp(AdminController, { serviceManager });
 
-  const port = Config.get("port", "number", 4000);
-  app.listen(port, () => displayServerURL(port));
+  const consumerPort = Config.get("consumer_port", "number", 4000);
+  const adminPort = Config.get("admin_port", "number", 4001);
+
+  consumerApp.listen(consumerPort, () => displayServerURL(consumerPort));
+  adminApp.listen(adminPort, () => displayServerURL(adminPort));
+
 }
 
 main().catch((err) => {

@@ -1,11 +1,11 @@
 import { Context, HttpResponseOK, Post, dependency } from "@foal/core";
 import { Get, HttpResponseBadRequest, HttpResponseInternalServerError } from "@foal/core/lib/core/http";
-import { EmailTokenRepository } from "../repositories/email-token.repo";
-import { EMAIL_TOKEN_STATUS } from "../repositories/email-token.repo/email-token.entity";
-import { ERROR_TYPE, InternalError } from "../domain/error";
-import { AuthService } from "../services/auth.service";
-import { EventLogRepository } from "../repositories/event_log.repo";
-import { EVENT_PRIMARY } from "../repositories/event_log.repo/event-log.entity";
+import { EmailTokenRepository } from "../../repositories/email-token.repo";
+import { EMAIL_TOKEN_STATUS } from "../../repositories/email-token.repo/email-token.entity";
+import { ERROR_TYPE, InternalError } from "../../domain/error";
+import { AuthService } from "../../services/auth.service";
+import { EventLogRepository } from "../../repositories/event_log.repo";
+import { EVENT_PRIMARY } from "../../repositories/event_log.repo/event-log.entity";
 
 export class AuthController {
   @dependency

@@ -12,7 +12,7 @@
 //     Transaction,
 //     Statement,
 //     CategoryRule,
-//     EventLog,
+//     EventLogEntity,
 //     Account,
 //     Category,
 //     TransactionComment,

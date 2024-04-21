@@ -1,16 +1,16 @@
 import { Repository } from "typeorm";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
-import { Candidate, ICandidate, IUnsavedCandidate } from "./candidate.entity";
+import { CandidateEntity, ICandidate, IUnsavedCandidate } from "./candidate.entity";
 
 export class CandidateRepository {
   getAll(): Promise<Array<ICandidate>> {
-    return Candidate.find()
+    return CandidateEntity.find()
   }
   getById(id: string): Promise<ICandidate | null> {
-    return Candidate.findOneBy({ id })
+    return CandidateEntity.findOneBy({ id })
   }
   getByElectionId(election_id: string): Promise<ICandidate[]> {
-    return Candidate.findBy({ election_id })
+    return CandidateEntity.findBy({ election_id })
   }
   async getByIdOrThrow(id: string): Promise<ICandidate> {
     const candidate = await this.getById(id);
@@ -30,6 +30,6 @@ export class CandidateRepository {
     if (!unsaved.created_at) {
       unsaved.created_at = new Date;
     }
-    return Candidate.save(unsaved as any);
+    return CandidateEntity.save(unsaved as any);
   }
 }

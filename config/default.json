@@ -1,5 +1,6 @@
 {
-  "port": "env(PORT)",
+  "consumer_port": "env(CONSUMER_PORT)",
+  "admin_port": "env(ADMIN_PORT)",
   "settings": {
     "loggerFormat": "tiny",
     "session": {

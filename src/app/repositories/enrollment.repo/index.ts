@@ -1,14 +1,14 @@
 import { Repository } from "typeorm";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
-import { Enrollment, IEnrollment } from "./enrollment.entity";
-import { Election } from "../election.repo/election.entity";
+import { EnrollmentEntity, IEnrollment } from "./enrollment.entity";
+import { ElectionEntity } from "../election.repo/election.entity";
 
 export class EnrollmentRepository {
   getAll(): Promise<Array<IEnrollment>> {
-    return Enrollment.find()
+    return EnrollmentEntity.find()
   }
   getById(id: string): Promise<IEnrollment | null> {
-    return Enrollment.findOneBy({ id })
+    return EnrollmentEntity.findOneBy({ id })
   }
   async getByIdOrThrow(id: string): Promise<IEnrollment> {
     const enrollment = await this.getById(id);
@@ -25,10 +25,10 @@ export class EnrollmentRepository {
   }
 
   getEnrolledElections(voter_id: string) {
-    return Election
+    return ElectionEntity
       .createQueryBuilder('el')
       .select('el.*')
-      .leftJoin(Enrollment, 'en')
+      .leftJoin(EnrollmentEntity, 'en')
       .where('en.voter_id = :voter_id', { voter_id })
       .getMany();
   }

@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
-import { Voter } from "../voter.repo/voter.entity";
-import { Election } from "../election.repo/election.entity";
+import { VoterEntity } from "../voter.repo/voter.entity";
+import { ElectionEntity } from "../election.repo/election.entity";
 
 export interface IEnrollment extends IUnsavedEnrollment {
   id: string;
@@ -14,16 +14,16 @@ export interface IUnsavedEnrollment {
 }
 
 @Entity("enrollments")
-export class Enrollment extends BaseEntity implements IEnrollment {
+export class EnrollmentEntity extends BaseEntity implements IEnrollment {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
   created_at: Date;
 
-  @ForeignKey(Voter)
+  @ForeignKey(VoterEntity)
   voter_id: string
 
-  @ForeignKey(Election)
+  @ForeignKey(ElectionEntity)
   election_id: string
 }

@@ -17,7 +17,7 @@ import { ElectionController } from "./election.controller";
   );
   response.setHeader("Access-Control-Allow-Credentials", "true");
 })
-export class ApiController {
+export class ConsumerController {
   subControllers = [
     controller("/auth", AuthController),
     controller("/elections", ElectionController)

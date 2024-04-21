@@ -1,7 +1,7 @@
 
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
-import { Election } from "../election.repo/election.entity";
+import { ElectionEntity } from "../election.repo/election.entity";
 import { IBaseUnsaved } from "../base";
 
 export interface ICandidate extends IUnsavedCandidate {
@@ -19,14 +19,14 @@ export interface IUnsavedCandidate extends IBaseUnsaved {
 }
 
 @Entity("candidates")
-export class Candidate extends BaseEntity implements ICandidate {
+export class CandidateEntity extends BaseEntity implements ICandidate {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
   created_at: Date;
 
-  @ForeignKey(Election)
+  @ForeignKey(ElectionEntity)
   election_id: string;
 
   @Column()

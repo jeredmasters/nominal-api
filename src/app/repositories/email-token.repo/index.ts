@@ -1,16 +1,16 @@
 import { Repository } from "typeorm";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
-import { EMAIL_TOKEN_STATUS, EmailToken, IEmailToken, IUnsavedEmailToken } from "./email-token.entity";
+import { EMAIL_TOKEN_STATUS, EmailTokenEntity, IEmailToken, IUnsavedEmailToken } from "./email-token.entity";
 
 export class EmailTokenRepository {
   getAll(): Promise<Array<IEmailToken>> {
-    return EmailToken.find()
+    return EmailTokenEntity.find()
   }
   getById(id: string): Promise<IEmailToken | null> {
-    return EmailToken.findOneBy({ id });
+    return EmailTokenEntity.findOneBy({ id });
   }
   setStatus(id: string, status: EMAIL_TOKEN_STATUS) {
-    return EmailToken.update(id, { status });
+    return EmailTokenEntity.update(id, { status });
   }
 
   async getByIdOrThrow(id: string): Promise<IEmailToken> {
@@ -31,6 +31,6 @@ export class EmailTokenRepository {
     if (!unsaved.created_at) {
       unsaved.created_at = new Date;
     }
-    return EmailToken.save(unsaved as any);
+    return EmailTokenEntity.save(unsaved as any);
   }
 }

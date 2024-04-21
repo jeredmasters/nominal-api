@@ -1,7 +1,7 @@
 
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
-import { Organisation } from "../organisation.repo/organisation.entity";
+import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 
 export interface IResponse extends IUnsavedResponse {
   id: string;
@@ -15,17 +15,17 @@ export interface IUnsavedResponse {
 }
 
 @Entity("responses")
-export class Response extends BaseEntity implements IResponse {
+export class ResponseEntity extends BaseEntity implements IResponse {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
   created_at: Date;
 
-  @ForeignKey(Organisation)
+  @ForeignKey(OrganisationEntity)
   voter_id: string;
 
-  @ForeignKey(Organisation)
+  @ForeignKey(OrganisationEntity)
   election_id: string;
 
   @Column()

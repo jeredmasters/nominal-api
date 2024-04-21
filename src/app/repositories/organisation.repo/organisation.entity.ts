@@ -14,7 +14,7 @@ export interface IUnsavedOrganisation extends IBaseUnsaved {
 }
 
 @Entity("organisationa")
-export class Organisation extends BaseEntity implements IOrganisation {
+export class OrganisationEntity extends BaseEntity implements IOrganisation {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

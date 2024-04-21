@@ -1,12 +1,12 @@
 import { Context, Get, Hook, HttpResponseOK, HttpResponseUnauthorized, Put } from "@foal/core";
 import { dependency } from "@foal/core/lib/core/service-manager";
 
-import { ElectionRepository } from "../repositories/election.repo";
-import { CandidateRepository } from "../repositories/candidate.repo";
-import { IVoter } from "../repositories/voter.repo/voter.entity";
-import { AuthService } from "../services/auth.service";
-import { EnrollmentRepository } from "../repositories/enrollment.repo";
-import { ERROR_TYPE, InternalError } from "../domain/error";
+import { ElectionRepository } from "../../repositories/election.repo";
+import { CandidateRepository } from "../../repositories/candidate.repo";
+import { IVoter } from "../../repositories/voter.repo/voter.entity";
+import { AuthService } from "../../services/auth.service";
+import { EnrollmentRepository } from "../../repositories/enrollment.repo";
+import { ERROR_TYPE, InternalError } from "../../domain/error";
 
 
 export class ElectionController {
