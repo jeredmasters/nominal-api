@@ -1,10 +1,8 @@
 version: 0.0
 os: linux
 files:
-  - source: Config/config.txt
-    destination: /webapps/Config
-  - source: source
-    destination: /webapps/myApp
+  - source: /
+    destination: /var/app
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
