@@ -5,4 +5,4 @@ npm run migrations
 npm run start
 
 pm2 stop all
-pm2 start /var/app
+pm2 start /var/app/build/index.js
