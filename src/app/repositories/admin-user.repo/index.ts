@@ -29,9 +29,9 @@ export class AdminUserRepository {
   }
 
   async save(unsaved: IUnsavedAdminUser): Promise<IAdminUser> {
-    if (!unsaved.created_at) {
-      unsaved.created_at = new Date;
-    }
+    // if (!unsaved.created_at) {
+    //   unsaved.created_at = new Date;
+    // }
     return AdminUserEntity.save(unsaved as any);
   }
 }

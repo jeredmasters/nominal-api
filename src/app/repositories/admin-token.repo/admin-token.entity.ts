@@ -1,8 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
-import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base";
-import { EmailTokenEntity } from "../email-token.repo/email-token.entity";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
 
 export interface IAdminToken extends IUnsavedAdminToken {
@@ -24,8 +22,11 @@ export class AdminTokenEntity extends BaseEntity implements IAdminToken {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ForeignKey(AdminUserEntity)
   admin_user_id: string;

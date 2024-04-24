@@ -23,10 +23,7 @@ export class OrganisationRepository {
     return organisation;
   }
 
-  async save(unsaved: IUnsavedOrganisation) {
-    if (!unsaved.created_at) {
-      unsaved.created_at = new Date;
-    }
+  async save(unsaved: IUnsavedOrganisation): Promise<IOrganisation> {
     return OrganisationEntity.save(unsaved as any);
   }
 }

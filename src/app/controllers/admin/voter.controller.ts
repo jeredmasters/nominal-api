@@ -1,19 +1,31 @@
-import { Context, Get, HttpResponseInternalServerError } from "@foal/core";
-
-import { applyRestQuery } from "../util";
+import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
+import { EnrollmentEntity } from "../../repositories/enrollment.repo/enrollment.entity";
 import { VoterEntity } from "../../repositories/voter.repo/voter.entity";
+import { AdminBaseController } from "../util";
 
-export class VoterController {
-  @Get('')
-  async index(ctx: Context) {
-    try {
-      const query = ctx.request.query;
-      console.log({ query })
-      return await applyRestQuery(VoterEntity, query)
-    }
-    catch (err) {
-      console.error(err);
-      return new HttpResponseInternalServerError(err)
+export class VoterController extends AdminBaseController {
+  constructor() {
+    super(VoterEntity, "v")
+  }
+
+  applyFilter(queryBuilder: SelectQueryBuilder<ObjectLiteral>, field: string, value: any) {
+    console.log("OVERRIDE FILTER", field)
+
+    switch (field) {
+      case "q":
+        queryBuilder.where('(v.first_name ilike :q OR v.last_name ilike :q)', { q: value });
+        break;
+
+      case "election_id":
+        queryBuilder.leftJoin(EnrollmentEntity, 'r', "v.id = r.voter_id")
+        queryBuilder.where('r.election_id = :election_id', { election_id: value })
+        break;
+
+      default:
+        queryBuilder.andWhere({ [field]: queryBuilder[field] });
+        break;
+
     }
   }
+
 }

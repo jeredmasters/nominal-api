@@ -1,8 +1,8 @@
 
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
-import { ElectionEntity } from "../election.repo/election.entity";
 import { IBaseUnsaved } from "../base";
+import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 
 export interface ICandidate extends IUnsavedCandidate {
   id: string;
@@ -15,7 +15,7 @@ export interface IUnsavedCandidate extends IBaseUnsaved {
   learn_more_url?: string;
   image_sm_url?: string;
   image_lg_url?: string;
-  election_id: string;
+  organisation_id: string;
 }
 
 @Entity("candidates")
@@ -23,11 +23,14 @@ export class CandidateEntity extends BaseEntity implements ICandidate {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
 
-  @ForeignKey(ElectionEntity)
-  election_id: string;
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @ForeignKey(OrganisationEntity)
+  organisation_id: string;
 
   @Column()
   label: string;

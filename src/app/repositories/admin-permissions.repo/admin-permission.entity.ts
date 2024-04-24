@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
@@ -31,8 +31,11 @@ export class AdminPermissionEntity extends BaseEntity implements IAdminPermissio
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ForeignKey(AdminUserEntity)
   admin_user_id: string;

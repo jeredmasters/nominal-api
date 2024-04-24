@@ -24,9 +24,6 @@ export class EventLogRepository {
   }
 
   async save(unsaved: IUnsavedEventLog) {
-    if (!unsaved.created_at) {
-      unsaved.created_at = new Date;
-    }
     return EventLogEntity.save(unsaved as any);
   }
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base";
@@ -41,8 +41,11 @@ export class EventLogEntity extends BaseEntity implements IEventLog {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @Column()
   primary: EVENT_PRIMARY;

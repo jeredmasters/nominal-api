@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { IBaseUnsaved } from "../base";
 import { ForeignKey } from "../../util/foreign-key";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
@@ -24,8 +24,11 @@ export class AdminPasscode extends BaseEntity implements IAdminPasscode {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ForeignKey(AdminUserEntity)
   admin_user_id: string;

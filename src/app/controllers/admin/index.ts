@@ -21,7 +21,9 @@ import { AdminAuthService } from "../../services/admin-auth.service";
 import { errorToResponse } from "../util";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { IAdminUser } from "../../repositories/admin-user.repo/admin-user.entity";
-import { CandidateController } from "./election.controller copy";
+import { RunningController } from "./running.controller";
+import { CandidateController } from "./candidate.controller";
+import { EnrollmentController } from "./enrollment.controller";
 
 @Hook((ctx) => (response) => {
   response.setHeader(
@@ -104,6 +106,10 @@ export class AuthController {
     controller("/organisations", OrganisationController),
     controller("/responses", ResponseController),
     controller("/voters", VoterController),
+    controller("/runnings", RunningController),
+    controller("/enrollments", EnrollmentController),
+    controller("/email-tokens", EmailTokenController)
+
   ];
 
   @Get("/status")

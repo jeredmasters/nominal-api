@@ -6,6 +6,7 @@ import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { AuthService } from "../../services/auth.service";
 import { EventLogRepository } from "../../repositories/event_log.repo";
 import { EVENT_PRIMARY } from "../../repositories/event_log.repo/event-log.entity";
+import { errorToResponse } from "../util";
 
 export class AuthController {
   @dependency
@@ -57,8 +58,7 @@ export class AuthController {
       })
       return new HttpResponseOK({ api_token, email_token });
     } catch (err) {
-      console.error(err)
-      return new HttpResponseInternalServerError(err);
+      return errorToResponse(err)
     }
   }
 

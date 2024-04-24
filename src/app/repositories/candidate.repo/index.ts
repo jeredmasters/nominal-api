@@ -9,9 +9,6 @@ export class CandidateRepository {
   getById(id: string): Promise<ICandidate | null> {
     return CandidateEntity.findOneBy({ id })
   }
-  getByElectionId(election_id: string): Promise<ICandidate[]> {
-    return CandidateEntity.findBy({ election_id })
-  }
   async getByIdOrThrow(id: string): Promise<ICandidate> {
     const candidate = await this.getById(id);
     if (!candidate) {

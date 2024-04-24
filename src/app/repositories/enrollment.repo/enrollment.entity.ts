@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity, CreateDateColumn, UpdateDateColumn, Unique } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
 import { ElectionEntity } from "../election.repo/election.entity";
@@ -14,12 +14,16 @@ export interface IUnsavedEnrollment {
 }
 
 @Entity("enrollments")
+@Unique(["voter_id", "election_id"])
 export class EnrollmentEntity extends BaseEntity implements IEnrollment {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ForeignKey(VoterEntity)
   voter_id: string

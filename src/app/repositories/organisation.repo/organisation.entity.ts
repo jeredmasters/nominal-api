@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { IBaseUnsaved } from "../base";
 
 export interface IOrganisation extends IUnsavedOrganisation {
@@ -13,13 +13,16 @@ export interface IUnsavedOrganisation extends IBaseUnsaved {
   theme_highlight?: string;
 }
 
-@Entity("organisationa")
+@Entity("organisations")
 export class OrganisationEntity extends BaseEntity implements IOrganisation {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @Column()
   label: string;

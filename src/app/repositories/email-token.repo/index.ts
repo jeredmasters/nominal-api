@@ -28,9 +28,6 @@ export class EmailTokenRepository {
   }
 
   async save(unsaved: IUnsavedEmailToken) {
-    if (!unsaved.created_at) {
-      unsaved.created_at = new Date;
-    }
     return EmailTokenEntity.save(unsaved as any);
   }
 }

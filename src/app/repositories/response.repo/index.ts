@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { ResponseEntity, IResponse } from "./reponse.entity";
 
-export class ResponseRepository extends Repository<Response> {
+export class ResponseRepository {
   getAll(): Promise<Array<IResponse>> {
     return ResponseEntity.find()
   }
@@ -21,5 +21,8 @@ export class ResponseRepository extends Repository<Response> {
       });
     }
     return response;
+  }
+  getByVoterId(voter_id: string) {
+    return ResponseEntity.findBy({ voter_id })
   }
 }

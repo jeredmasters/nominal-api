@@ -23,10 +23,7 @@ export class VoterRepository {
     }
     return account;
   }
-  async save(unsaved: IUnsavedVoter) {
-    if (!unsaved.created_at) {
-      unsaved.created_at = new Date;
-    }
+  async save(unsaved: IUnsavedVoter): Promise<IVoter> {
     return VoterEntity.save(unsaved as any);
   }
 }

@@ -1,5 +1,5 @@
 
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 
@@ -19,8 +19,11 @@ export class ResponseEntity extends BaseEntity implements IResponse {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ForeignKey(OrganisationEntity)
   voter_id: string;

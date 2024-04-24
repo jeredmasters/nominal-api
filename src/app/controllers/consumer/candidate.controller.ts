@@ -8,10 +8,9 @@ import { AuthService } from "../../services/auth.service";
 import { EnrollmentRepository } from "../../repositories/enrollment.repo";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { RunningRepository } from "../../repositories/running.repo";
-import { errorToResponse } from "../util";
 
 
-export class ElectionController {
+export class CandidateController {
   @dependency
   private readonly electionRepository: ElectionRepository;
 
@@ -28,14 +27,14 @@ export class ElectionController {
   private readonly runningRepository: RunningRepository;
 
   @Get("")
-  async getRules({ request, user }: Context<IVoter>) {
-    try {
-      return new HttpResponseOK(
-        await this.enrollemntRepository.getEnrolledElections(user.id)
-      );
-    } catch (err) {
-      return errorToResponse(err)
-    }
+  async getRules({ request }: Context) {
+    const authorization = request.headers['Authorization'];
+    const voter = await this.authService.validate(authorization);
+
+
+    return new HttpResponseOK(
+      await this.enrollemntRepository.getEnrolledElections(voter?.id)
+    );
   }
 
   @Get("/:id")
@@ -44,7 +43,8 @@ export class ElectionController {
       const { id } = request.params;
       return new HttpResponseOK(await this.electionRepository.getByIdOrThrow(id));
     } catch (err) {
-      return errorToResponse(err)
+      console.error(err);
+      return err;
     }
   }
 
@@ -69,7 +69,7 @@ export class ElectionController {
         await this.runningRepository.getRunningCandidates(id)
       );
     } catch (err) {
-      return errorToResponse(err)
+      return new HttpResponseUnauthorized(err)
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base";
@@ -16,6 +16,7 @@ export interface IUnsavedApiToken extends IBaseUnsaved {
   email_token_id?: string;
   client_ip?: string;
   client_user_agent?: string;
+  device_meta?: any
 }
 
 @Entity("api_tokens")
@@ -23,8 +24,11 @@ export class ApiTokenEntity extends BaseEntity implements IApiToken {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ForeignKey(VoterEntity)
   voter_id: string;
@@ -44,4 +48,6 @@ export class ApiTokenEntity extends BaseEntity implements IApiToken {
   @Column({ nullable: true })
   client_user_agent?: string;
 
+  // @Column('jsonb', { nullable: true })
+  // device_meta?: string;
 }

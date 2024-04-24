@@ -1,56 +1,86 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Migration1713596658833 implements MigrationInterface {
-    name = 'Migration1713596658833'
+export class Migration1713842061522 implements MigrationInterface {
+    name = 'Migration1713842061522'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
-            CREATE TABLE "organisationa" (
+            CREATE TABLE "admin_users" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "name" character varying NOT NULL,
+                "email" character varying NOT NULL,
+                CONSTRAINT "PK_06744d221bb6145dc61e5dc441d" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "admin_passcode" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "admin_user_id" uuid NOT NULL,
+                "type" character varying NOT NULL,
+                "value" character varying NOT NULL,
+                CONSTRAINT "PK_6cc4a757570e4309465e2b22b75" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "organisations" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "label" character varying NOT NULL,
                 "logo_sm_url" character varying,
                 "logo_lg_url" character varying,
-                CONSTRAINT "PK_ffc2b3884ea1d071db29591fced" PRIMARY KEY ("id")
+                CONSTRAINT "PK_7bf54cba378d5b2f1d4c10ef4df" PRIMARY KEY ("id")
             )
         `);
         await queryRunner.query(`
             CREATE TABLE "voters" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "organisation_id" uuid NOT NULL,
                 "first_name" character varying NOT NULL,
                 "last_name" character varying NOT NULL,
+                "email" character varying NOT NULL,
                 CONSTRAINT "PK_a58842a42a7c48bc3efebb0a305" PRIMARY KEY ("id")
             )
         `);
         await queryRunner.query(`
             CREATE TABLE "elections" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "organisation_id" uuid NOT NULL,
+                "copy_election_id" uuid,
                 "label" character varying NOT NULL,
                 "type" character varying NOT NULL,
+                "closes_at" TIMESTAMP NOT NULL,
+                "opens_at" TIMESTAMP NOT NULL,
                 CONSTRAINT "PK_21abca6e4191b830d1eb8379cf0" PRIMARY KEY ("id")
             )
         `);
         await queryRunner.query(`
             CREATE TABLE "email_tokens" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "voter_id" uuid NOT NULL,
                 "election_id" uuid,
                 "action" character varying NOT NULL,
                 "status" character varying NOT NULL,
-                "expirest_at" TIMESTAMP,
+                "expires_at" TIMESTAMP,
                 CONSTRAINT "PK_08abb3fa348e894c274a6730d35" PRIMARY KEY ("id")
             )
         `);
         await queryRunner.query(`
             CREATE TABLE "candidates" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
-                "election_id" uuid NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "organisation_id" uuid NOT NULL,
                 "label" character varying NOT NULL,
                 "description" character varying,
                 "learn_more_url" character varying,
@@ -62,7 +92,8 @@ export class Migration1713596658833 implements MigrationInterface {
         await queryRunner.query(`
             CREATE TABLE "api_tokens" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "voter_id" uuid NOT NULL,
                 "email_token_id" uuid,
                 "public_key" character varying NOT NULL,
@@ -75,16 +106,19 @@ export class Migration1713596658833 implements MigrationInterface {
         await queryRunner.query(`
             CREATE TABLE "enrollments" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "voter_id" uuid NOT NULL,
                 "election_id" uuid NOT NULL,
+                CONSTRAINT "UQ_fc04d00159014da5bd2e403bd48" UNIQUE ("voter_id", "election_id"),
                 CONSTRAINT "PK_7c0f752f9fb68bf6ed7367ab00f" PRIMARY KEY ("id")
             )
         `);
         await queryRunner.query(`
             CREATE TABLE "responses" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "voter_id" uuid NOT NULL,
                 "election_id" uuid NOT NULL,
                 "response" character varying NOT NULL,
@@ -92,18 +126,10 @@ export class Migration1713596658833 implements MigrationInterface {
             )
         `);
         await queryRunner.query(`
-            CREATE TABLE "admin_users" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
-                "name" character varying NOT NULL,
-                "email" character varying NOT NULL,
-                CONSTRAINT "PK_06744d221bb6145dc61e5dc441d" PRIMARY KEY ("id")
-            )
-        `);
-        await queryRunner.query(`
             CREATE TABLE "admin_permissions" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "admin_user_id" uuid NOT NULL,
                 "permission" character varying NOT NULL,
                 CONSTRAINT "PK_97efc32c48511fc4061111040a0" PRIMARY KEY ("id")
@@ -112,7 +138,8 @@ export class Migration1713596658833 implements MigrationInterface {
         await queryRunner.query(`
             CREATE TABLE "admin_log" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "primary" character varying NOT NULL,
                 "trigger" character varying,
                 "admin_user_idadmin_user_id" jsonb,
@@ -130,22 +157,10 @@ export class Migration1713596658833 implements MigrationInterface {
             )
         `);
         await queryRunner.query(`
-            CREATE TABLE "admin_tokens" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
-                "admin_user_id" uuid NOT NULL,
-                "public_key" character varying NOT NULL,
-                "secret_key" character varying NOT NULL,
-                "client_ip" character varying,
-                "client_user_agent" character varying,
-                "device_meta" jsonb,
-                CONSTRAINT "PK_1b8fe3dbc19bbe91baa16ab6b09" PRIMARY KEY ("id")
-            )
-        `);
-        await queryRunner.query(`
             CREATE TABLE "event_log" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "primary" character varying NOT NULL,
                 "trigger" character varying,
                 "meta" jsonb,
@@ -161,22 +176,45 @@ export class Migration1713596658833 implements MigrationInterface {
             )
         `);
         await queryRunner.query(`
-            CREATE TABLE "admin_passcode" (
+            CREATE TABLE "admin_tokens" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "created_at" TIMESTAMP NOT NULL,
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
                 "admin_user_id" uuid NOT NULL,
-                "type" character varying NOT NULL,
-                "value" character varying NOT NULL,
-                CONSTRAINT "PK_6cc4a757570e4309465e2b22b75" PRIMARY KEY ("id")
+                "public_key" character varying NOT NULL,
+                "secret_key" character varying NOT NULL,
+                "client_ip" character varying,
+                "client_user_agent" character varying,
+                "device_meta" jsonb,
+                CONSTRAINT "PK_1b8fe3dbc19bbe91baa16ab6b09" PRIMARY KEY ("id")
             )
         `);
         await queryRunner.query(`
+            CREATE TABLE "runnings" (
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+                "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+                "candidate_id" uuid NOT NULL,
+                "election_id" uuid NOT NULL,
+                CONSTRAINT "UQ_eb33b9e783aaa3569c9f1beb058" UNIQUE ("candidate_id", "election_id"),
+                CONSTRAINT "PK_f4dba91aaf130695c587db8a2d2" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "admin_passcode"
+            ADD CONSTRAINT "FK_390af88ad2ec4fa291b33c6b979" FOREIGN KEY ("admin_user_id") REFERENCES "admin_users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
             ALTER TABLE "voters"
-            ADD CONSTRAINT "FK_ebdfb9e41a142b1079e60aed63e" FOREIGN KEY ("organisation_id") REFERENCES "organisationa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_ebdfb9e41a142b1079e60aed63e" FOREIGN KEY ("organisation_id") REFERENCES "organisations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "elections"
-            ADD CONSTRAINT "FK_249f6055bf7a67a17e6f6ec6f59" FOREIGN KEY ("organisation_id") REFERENCES "organisationa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_249f6055bf7a67a17e6f6ec6f59" FOREIGN KEY ("organisation_id") REFERENCES "organisations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "elections"
+            ADD CONSTRAINT "FK_34883fa5eff7740f70f0ec30936" FOREIGN KEY ("copy_election_id") REFERENCES "elections"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "email_tokens"
@@ -184,11 +222,11 @@ export class Migration1713596658833 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "email_tokens"
-            ADD CONSTRAINT "FK_b3cf82eb33e2609bb6d7fc841ad" FOREIGN KEY ("election_id") REFERENCES "voters"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_b3cf82eb33e2609bb6d7fc841ad" FOREIGN KEY ("election_id") REFERENCES "elections"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "candidates"
-            ADD CONSTRAINT "FK_32673ff5618c85a5ac2620e7cd0" FOREIGN KEY ("election_id") REFERENCES "elections"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_9f898cd26fb19cf9dc4621328c7" FOREIGN KEY ("organisation_id") REFERENCES "organisations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "api_tokens"
@@ -208,11 +246,11 @@ export class Migration1713596658833 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "responses"
-            ADD CONSTRAINT "FK_afc3c24ffadd97da21107abf2f5" FOREIGN KEY ("voter_id") REFERENCES "organisationa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_afc3c24ffadd97da21107abf2f5" FOREIGN KEY ("voter_id") REFERENCES "organisations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "responses"
-            ADD CONSTRAINT "FK_96b0c2088c452b397d991e8e3bb" FOREIGN KEY ("election_id") REFERENCES "organisationa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_96b0c2088c452b397d991e8e3bb" FOREIGN KEY ("election_id") REFERENCES "organisations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "admin_permissions"
@@ -244,7 +282,7 @@ export class Migration1713596658833 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "admin_log"
-            ADD CONSTRAINT "FK_83e3f357452e9393849e99125ac" FOREIGN KEY ("organisation_id") REFERENCES "organisationa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_83e3f357452e9393849e99125ac" FOREIGN KEY ("organisation_id") REFERENCES "organisations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "admin_log"
@@ -257,10 +295,6 @@ export class Migration1713596658833 implements MigrationInterface {
         await queryRunner.query(`
             ALTER TABLE "admin_log"
             ADD CONSTRAINT "FK_ed36e307c4d3daa9762b205befb" FOREIGN KEY ("response_id") REFERENCES "responses"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
-        await queryRunner.query(`
-            ALTER TABLE "admin_tokens"
-            ADD CONSTRAINT "FK_d36431dd8b3d2d315e6593237b9" FOREIGN KEY ("admin_user_id") REFERENCES "admin_users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "event_log"
@@ -280,7 +314,7 @@ export class Migration1713596658833 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "event_log"
-            ADD CONSTRAINT "FK_4702916d51f9626dfa637af15fe" FOREIGN KEY ("organisation_id") REFERENCES "organisationa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_4702916d51f9626dfa637af15fe" FOREIGN KEY ("organisation_id") REFERENCES "organisations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "event_log"
@@ -295,14 +329,28 @@ export class Migration1713596658833 implements MigrationInterface {
             ADD CONSTRAINT "FK_d67a3fc2c943611834478d8803a" FOREIGN KEY ("response_id") REFERENCES "responses"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
-            ALTER TABLE "admin_passcode"
-            ADD CONSTRAINT "FK_390af88ad2ec4fa291b33c6b979" FOREIGN KEY ("admin_user_id") REFERENCES "admin_users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ALTER TABLE "admin_tokens"
+            ADD CONSTRAINT "FK_d36431dd8b3d2d315e6593237b9" FOREIGN KEY ("admin_user_id") REFERENCES "admin_users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "runnings"
+            ADD CONSTRAINT "FK_5ead13968fd66de0447096c8cf8" FOREIGN KEY ("candidate_id") REFERENCES "candidates"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "runnings"
+            ADD CONSTRAINT "FK_fe6ded7d0842fc873ae25b160fd" FOREIGN KEY ("election_id") REFERENCES "elections"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
-            ALTER TABLE "admin_passcode" DROP CONSTRAINT "FK_390af88ad2ec4fa291b33c6b979"
+            ALTER TABLE "runnings" DROP CONSTRAINT "FK_fe6ded7d0842fc873ae25b160fd"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "runnings" DROP CONSTRAINT "FK_5ead13968fd66de0447096c8cf8"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "admin_tokens" DROP CONSTRAINT "FK_d36431dd8b3d2d315e6593237b9"
         `);
         await queryRunner.query(`
             ALTER TABLE "event_log" DROP CONSTRAINT "FK_d67a3fc2c943611834478d8803a"
@@ -327,9 +375,6 @@ export class Migration1713596658833 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "event_log" DROP CONSTRAINT "FK_77ca42b73fe5fa97878425067b7"
-        `);
-        await queryRunner.query(`
-            ALTER TABLE "admin_tokens" DROP CONSTRAINT "FK_d36431dd8b3d2d315e6593237b9"
         `);
         await queryRunner.query(`
             ALTER TABLE "admin_log" DROP CONSTRAINT "FK_ed36e307c4d3daa9762b205befb"
@@ -383,7 +428,7 @@ export class Migration1713596658833 implements MigrationInterface {
             ALTER TABLE "api_tokens" DROP CONSTRAINT "FK_6af3ee8752108c46ae45595b87f"
         `);
         await queryRunner.query(`
-            ALTER TABLE "candidates" DROP CONSTRAINT "FK_32673ff5618c85a5ac2620e7cd0"
+            ALTER TABLE "candidates" DROP CONSTRAINT "FK_9f898cd26fb19cf9dc4621328c7"
         `);
         await queryRunner.query(`
             ALTER TABLE "email_tokens" DROP CONSTRAINT "FK_b3cf82eb33e2609bb6d7fc841ad"
@@ -392,28 +437,31 @@ export class Migration1713596658833 implements MigrationInterface {
             ALTER TABLE "email_tokens" DROP CONSTRAINT "FK_a3b56799b7ef679570284e42141"
         `);
         await queryRunner.query(`
+            ALTER TABLE "elections" DROP CONSTRAINT "FK_34883fa5eff7740f70f0ec30936"
+        `);
+        await queryRunner.query(`
             ALTER TABLE "elections" DROP CONSTRAINT "FK_249f6055bf7a67a17e6f6ec6f59"
         `);
         await queryRunner.query(`
             ALTER TABLE "voters" DROP CONSTRAINT "FK_ebdfb9e41a142b1079e60aed63e"
         `);
         await queryRunner.query(`
-            DROP TABLE "admin_passcode"
+            ALTER TABLE "admin_passcode" DROP CONSTRAINT "FK_390af88ad2ec4fa291b33c6b979"
         `);
         await queryRunner.query(`
-            DROP TABLE "event_log"
+            DROP TABLE "runnings"
         `);
         await queryRunner.query(`
             DROP TABLE "admin_tokens"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "event_log"
         `);
         await queryRunner.query(`
             DROP TABLE "admin_log"
         `);
         await queryRunner.query(`
             DROP TABLE "admin_permissions"
-        `);
-        await queryRunner.query(`
-            DROP TABLE "admin_users"
         `);
         await queryRunner.query(`
             DROP TABLE "responses"
@@ -437,7 +485,13 @@ export class Migration1713596658833 implements MigrationInterface {
             DROP TABLE "voters"
         `);
         await queryRunner.query(`
-            DROP TABLE "organisationa"
+            DROP TABLE "organisations"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "admin_passcode"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "admin_users"
         `);
     }
 

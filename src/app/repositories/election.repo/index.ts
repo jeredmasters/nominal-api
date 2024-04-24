@@ -23,7 +23,7 @@ export class ElectionRepository {
     return election;
   }
 
-  async save(unsaved: IUnsavedElection) {
+  async save(unsaved: IUnsavedElection): Promise<IElection> {
     if (!unsaved.created_at) {
       unsaved.created_at = new Date;
     }
