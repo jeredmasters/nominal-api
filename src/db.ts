@@ -1,21 +1,28 @@
 import { Config } from "@foal/core";
 import { DataSource } from "typeorm";
 
+import * as dotenv from "dotenv";
+dotenv.config()
+
+const getConf = (name: string) => {
+  return process.env[name]
+}
+
+const getEnvNum = (name: string) => {
+  return Number(getConf(name))
+}
+
 export function createDataSource(): DataSource {
   return new DataSource({
     name: "default",
 
-    type: Config.getOrThrow("database.type", "string") as any,
+    type: 'postgres',
 
-    url: Config.get("database.url", "string"),
-    host: Config.get("database.host", "string"),
-    port: Config.get("database.port", "number"),
-    username: Config.get("database.username", "string"),
-    password: Config.get("database.password", "string"),
-    database: Config.get("database.database", "string"),
-
-    dropSchema: Config.get("database.dropSchema", "boolean", false),
-    synchronize: Config.get("database.synchronize", "boolean", false),
+    host: getConf('DB_HOST'),
+    port: getEnvNum('DB_PORT'),
+    username: getConf('DB_USER'),
+    password: getConf('DB_PASS'),
+    database: getConf('DB_NAME'),
 
     entities: ["build/app/**/*.entity.js"],
     migrations: ["build/migrations/*.js"],

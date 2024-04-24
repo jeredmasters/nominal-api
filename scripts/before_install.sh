@@ -17,3 +17,5 @@ sudo yum install npm  -y
 sudo npm install pm2 -g
 
 npm install typeorm
+
+cp /var/.env /var/app/
