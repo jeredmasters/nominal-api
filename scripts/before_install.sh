@@ -15,3 +15,5 @@ sudo yum update
 sudo yum install nodejs-legacy -y
 sudo yum install npm  -y
 sudo npm install pm2 -g
+
+npm install typeorm
