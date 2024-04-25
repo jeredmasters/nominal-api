@@ -10,12 +10,16 @@ hooks:
   ApplicationStop:
     - location: scripts/application_stop.sh
       timeout: 3600
+      runas: root
   BeforeInstall:
     - location: scripts/before_install.sh
       timeout: 3600
+      runas: root
   AfterInstall:
     - location: scripts/after_install.sh
       timeout: 3600
+      runas: root
   ApplicationStart:
     - location: scripts/application_start.sh
       timeout: 3600
+      runas: root
