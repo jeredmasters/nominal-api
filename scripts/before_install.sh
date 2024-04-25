@@ -16,6 +16,6 @@ sudo yum install nodejs-legacy -y
 sudo yum install npm  -y
 sudo npm install pm2 -g
 
-npm install typeorm
+npm install typeorm -g
 
 cp /var/.env /var/app/
