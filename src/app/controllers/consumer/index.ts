@@ -56,25 +56,6 @@ export class ConsumerController {
       return errorToResponse(err)
     }
   }
-
-  @Get("/health")
-  getHealth() {
-    return new HttpResponseOK({
-      status: "good"
-    })
-  }
-
-  @Options("*")
-  options(ctx: Context) {
-    const response = new HttpResponseNoContent();
-    response.setHeader(
-      "Access-Control-Allow-Methods",
-      "HEAD, GET, POST, PUT, PATCH, DELETE"
-    );
-    // You may need to allow other headers depending on what you need.
-
-    return response;
-  }
 }
 
 @Hook(async (ctx, services) => {

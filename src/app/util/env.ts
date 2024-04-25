@@ -32,11 +32,8 @@ export class EnvConf {
     }
     return fallback;
   }
-  adminApiPort() {
-    return this._num(ENV.ADMIN_API_PORT, 4001);
-  }
-  consumerApiPort() {
-    return this._num(ENV.CONSUMER_API_PORT, 4000);
+  httpPort() {
+    return this._num(ENV.HTTP_PORT, 4000);
   }
   dbHost() {
     return this._str(ENV.DB_HOST, "localhost");
@@ -75,6 +72,5 @@ export enum ENV {
   SENDGRID_API_KEY = 'SENDGRID_API_KEY',
   SENDGRID_EMAIL = 'SENDGRID_EMAIL',
   CONSUMER_FE_URL = 'CONSUMER_FE_URL',
-  CONSUMER_API_PORT = 'CONSUMER_API_PORT',
-  ADMIN_API_PORT = 'ADMIN_API_PORT'
+  HTTP_PORT = 'HTTP_PORT',
 }
