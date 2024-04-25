@@ -7,7 +7,7 @@ import { ElectionRepository } from "../repositories/election.repo";
 import { InviteProps } from "../domain/enrollment";
 import { EmailTokenRepository } from "../repositories/email-token.repo";
 import { EMAIL_TOKEN_ACTION, EMAIL_TOKEN_STATUS } from "../repositories/email-token.repo/email-token.entity";
-import { FRONTEND_URL } from "../const/config";
+import { env } from "../util/env";
 
 export class EmailService {
     @dependency
@@ -41,7 +41,7 @@ export class EmailService {
             first_name: voter.first_name,
             last_name: voter.last_name,
             vote_name: election.label,
-            token_url: FRONTEND_URL + "/email-token?t=" + emailToken.id,
+            token_url: env.consumerFeUrl() + "/email-token?t=" + emailToken.id,
             closes_at: election.closes_at.toDateString()
         }
 

@@ -26,19 +26,21 @@ curl -X "POST" "https://api.sendgrid.com/v3/mail/send" \
 
 
 */
+export interface ISendgridResult {
+    success: boolean;
+    meta: any;
+    reason?: string;
+}
 export class SendgridResource {
-
-
-    async sendInvite(props: InviteProps) {
+    async sendInvite(props: InviteProps): Promise<ISendgridResult> {
         const apiKey = env.sendgridApiKey();
         const sender = env.sendgridSender();
         if (!apiKey || !sender) {
-            return Promise.resolve(new InternalError({
-                code: "sendgrid_not_configured",
-                func: "sendInvite",
-                type: ERROR_TYPE.UNKOWN,
-                meta: { apiKey, sender }
-            }))
+            return Promise.resolve({
+                success: true,
+                meta: { apiKey, sender },
+                reason: "not_configured"
+            })
         }
         return axios({
             method: "post",
@@ -63,6 +65,21 @@ export class SendgridResource {
                     }
                 ]
             }
+        }).then((response): ISendgridResult => {
+            if (response.status >= 200 && response.status < 300) {
+                return {
+                    success: true,
+                    meta: response.data,
+                }
+            }
+            throw new InternalError({
+                code: "sendgrid_failed",
+                func: "sendInvite",
+                type: ERROR_TYPE.UNKOWN,
+                meta: { apiKey, sender },
+                context: response.status.toString(),
+                inner: response.data
+            })
         }).catch(e => {
             console.error(e)
             console.error(e.response.status)
