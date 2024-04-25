@@ -13,6 +13,7 @@ import { ConsumerController } from "./app/controllers/consumer";
 import { dataSource } from "./db";
 import { DataSource } from "typeorm";
 import { AdminController } from "./app/controllers/admin";
+import { env } from "./app/util/env";
 
 async function main() {
   await dataSource.initialize();
@@ -27,8 +28,8 @@ async function main() {
   const consumerApp = await createApp(ConsumerController, { serviceManager });
   const adminApp = await createApp(AdminController, { serviceManager });
 
-  const consumerPort = Config.get("consumer_port", "number", 4000);
-  const adminPort = Config.get("admin_port", "number", 4001);
+  const consumerPort = env.consumerApiPort()
+  const adminPort = env.adminApiPort()
 
   consumerApp.listen(consumerPort, () => displayServerURL(consumerPort));
   adminApp.listen(adminPort, () => displayServerURL(adminPort));
