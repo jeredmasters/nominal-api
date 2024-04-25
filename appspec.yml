@@ -5,22 +5,6 @@ files:
     destination: /var/app
   - source: /scripts/nominal-api.service
     destination: /lib/systemd/system/
-file_exists_behavior: OVERWRITE
-permissions:
-  - object:
-    pattern:
-    except:
-    owner:
-    group:
-    mode: 
-    acls:
-      -
-    context:
-      user:
-      type:
-      range:
-    type:
-      -
 hooks:
   ApplicationStop:
     - location: scripts/application_stop.sh
