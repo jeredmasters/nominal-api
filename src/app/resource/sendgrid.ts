@@ -1,7 +1,7 @@
 import axios from "axios";
-import { InviteProps } from "../domain/enrollment";
 import { env } from "../util/env";
 import { ERROR_TYPE, InternalError } from "../domain/error";
+import { EnrollmentInviteProps, LoginInviteProps } from "../domain/enrollment";
 
 
 /*
@@ -32,12 +32,25 @@ export interface ISendgridResult {
     reason?: string;
 }
 export class SendgridResource {
-    async sendInvite(props: InviteProps): Promise<ISendgridResult> {
+    async sendInvite(props: LoginInviteProps | EnrollmentInviteProps): Promise<ISendgridResult> {
+        return this.sendEmail("d-5544f1871e064453b4ec4a0905df6e28", props.email, props)
+    }
+    async sendEmail(templateId: string, email: string, props: any): Promise<ISendgridResult> {
+        console.log("SEND EMAIL", props)
+
+        if (email.endsWith('@example.com')) {
+            console.log("SKIP TEST EMAIL", email)
+            return Promise.resolve({
+                success: true,
+                meta: props,
+                reason: "skip_example"
+            })
+        }
         const apiKey = env.sendgridApiKey();
         const sender = env.sendgridSender();
         if (!apiKey || !sender) {
             return Promise.resolve({
-                success: true,
+                success: false,
                 meta: { apiKey, sender },
                 reason: "not_configured"
             })
@@ -53,12 +66,12 @@ export class SendgridResource {
                 "from": {
                     "email": sender
                 },
-                "template_id": "d-5544f1871e064453b4ec4a0905df6e28",
+                "template_id": templateId,
                 "personalizations": [
                     {
                         "to": [
                             {
-                                "email": props.email
+                                "email": email
                             }
                         ],
                         "dynamic_template_data": props

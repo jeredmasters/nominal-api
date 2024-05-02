@@ -5,7 +5,8 @@ After=network.target
 [Service]
 Type=simple
 User=ec2-user
-ExecStart=/usr/bin/node /var/app/build/index.js
+WorkingDirectory=/var/app
+ExecStart=npm run start
 Restart=on-failure
 EnvironmentFile=/var/app/.env
 

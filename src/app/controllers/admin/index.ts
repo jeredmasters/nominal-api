@@ -24,6 +24,9 @@ import { IAdminUser } from "../../repositories/admin-user.repo/admin-user.entity
 import { RunningController } from "./running.controller";
 import { CandidateController } from "./candidate.controller";
 import { EnrollmentController } from "./enrollment.controller";
+import { BallotController } from "./ballot.controller";
+import { AdminUserController } from "./admin-user.controller";
+import { env } from "../../util/env";
 
 @Hook((ctx) => (response) => {
   response.setHeader(
@@ -108,14 +111,26 @@ export class AuthController {
     controller("/voters", VoterController),
     controller("/runnings", RunningController),
     controller("/enrollments", EnrollmentController),
-    controller("/email-tokens", EmailTokenController)
-
+    controller("/email-tokens", EmailTokenController),
+    controller('/ballots', BallotController),
+    controller("/admin-users", AdminUserController)
   ];
 
   @Get("/status")
   async getStatus({ request, user }: Context<IAdminUser>) {
     try {
       return new HttpResponseOK(user);
+    } catch (err) {
+      return errorToResponse(err)
+    }
+  }
+
+  @Get("/config")
+  async getConfig({ request, user }: Context<IAdminUser>) {
+    try {
+      return new HttpResponseOK({
+        consumer_fe_url: env.consumerFeUrl()
+      });
     } catch (err) {
       return errorToResponse(err)
     }

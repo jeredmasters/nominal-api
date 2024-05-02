@@ -17,10 +17,13 @@ export class CandidateController extends AdminBaseController {
 
   applyFilter(queryBuilder: SelectQueryBuilder<ObjectLiteral>, field: string, value: any) {
     switch (field) {
-      case "election_id":
+      case "ballot_id":
         queryBuilder.leftJoin(RunningEntity, 'r', "c.id = r.candidate_id")
-        queryBuilder.where('r.election_id = :election_id', { election_id: value })
+        queryBuilder.andWhere('r.ballot_id = :ballot_id', { ballot_id: value })
         return true;
+      default:
+        queryBuilder.andWhere({ [field]: value });
+        break;
     }
     return false
   }

@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
+import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 
 export enum EMAIL_TOKEN_ACTION {
   LOGIN = "LOGIN",
@@ -23,7 +24,9 @@ export interface IAdminPermission extends IUnsavedAdminPermission {
 
 export interface IUnsavedAdminPermission extends IBaseUnsaved {
   admin_user_id: string;
-  permission: string;
+  entity: string;
+  action: string;
+  target_organisation_id?: string;
 }
 
 @Entity("admin_permissions")
@@ -41,5 +44,11 @@ export class AdminPermissionEntity extends BaseEntity implements IAdminPermissio
   admin_user_id: string;
 
   @Column()
-  permission: string;
+  entity: string;
+
+  @Column()
+  action: string;
+
+  @ForeignKey(OrganisationEntity, { nullable: true })
+  target_organisation_id?: string;
 }

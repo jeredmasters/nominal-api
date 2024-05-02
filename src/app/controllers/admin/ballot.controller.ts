@@ -1,15 +1,16 @@
 import { AdminBaseController } from "../util";
-import { ElectionEntity } from "../../repositories/election.repo/election.entity";
 import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
 import { RunningEntity } from "../../repositories/running.repo/running.entity";
 import { EnrollmentEntity } from "../../repositories/enrollment.repo/enrollment.entity";
 import { dependency } from "@foal/core";
 import { RunningRepository } from "../../repositories/running.repo";
+import { BallotEntity } from "../../repositories/ballot.repo/ballot.entity";
+import { ElectionEntity } from "../../repositories/election.repo/election.entity";
 
 
-export class ElectionController extends AdminBaseController {
+export class BallotController extends AdminBaseController {
   constructor() {
-    super(ElectionEntity, "e")
+    super(BallotEntity, "b")
   }
 
   @dependency
@@ -19,13 +20,12 @@ export class ElectionController extends AdminBaseController {
   applyFilter(queryBuilder: SelectQueryBuilder<ObjectLiteral>, field: string, value: any) {
     switch (field) {
       case "candidate_id":
-        queryBuilder.leftJoin(RunningEntity, 'r', "e.id = r.election_id")
+        queryBuilder.leftJoin(RunningEntity, 'r', "e.id = r.ballot_id")
         queryBuilder.andWhere('r.candidate_id = :candidate_id', { candidate_id: value })
         return true;
-      case "voter_id":
-        queryBuilder.leftJoin(EnrollmentEntity, 'r', "e.id = r.election_id")
-        queryBuilder.andWhere('r.voter_id = :voter_id', { voter_id: value })
-        queryBuilder.select("e.*, r.id as enrollment_id")
+      case "organisation_id":
+        queryBuilder.leftJoin(ElectionEntity, 'e', "e.id = b.election_id")
+        queryBuilder.andWhere('e.organisation_id = :organisation_id', { organisation_id: value })
         return true;
       default:
         queryBuilder.andWhere({ [field]: value });

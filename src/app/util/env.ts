@@ -57,7 +57,7 @@ export class EnvConf {
     return this._strN(ENV.SENDGRID_EMAIL)
   }
   consumerFeUrl() {
-    return this._str(ENV.SENDGRID_API_KEY, "http://localhost:3000")
+    return this._str(ENV.CONSUMER_FE_URL, "http://localhost:3000")
   }
 }
 

@@ -2,7 +2,6 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { ForeignKey } from "../../util/foreign-key";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { IBaseUnsaved } from "../base";
-import { ELECTION_TYPE } from "../../const/election";
 
 export interface IElection extends IUnsavedElection {
   id: string;
@@ -13,7 +12,6 @@ export interface IUnsavedElection extends IBaseUnsaved {
   organisation_id: string;
   copy_election_id?: string;
   label: string;
-  type: ELECTION_TYPE;
   opens_at: Date;
   closes_at: Date;
 }
@@ -37,9 +35,6 @@ export class ElectionEntity extends BaseEntity implements IElection {
 
   @Column()
   label: string;
-
-  @Column()
-  type: ELECTION_TYPE;
 
   @Column()
   closes_at: Date;

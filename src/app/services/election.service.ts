@@ -19,7 +19,6 @@ export class ElectionService {
         const election = await this.electionRepository.save({
             label: template.label,
             organisation_id: template.organisation_id,
-            type: template.type,
             closes_at: closes_at,
             opens_at: opens_at,
             copy_election_id: template.id

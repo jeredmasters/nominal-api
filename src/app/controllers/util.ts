@@ -1,4 +1,4 @@
-import { Context, Get, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseInternalServerError, HttpResponseNotFound, HttpResponseOK, HttpResponseUnauthorized, Post } from "@foal/core";
+import { Context, Get, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseInternalServerError, HttpResponseNotFound, HttpResponseOK, HttpResponseUnauthorized, Post, Put } from "@foal/core";
 import { ERROR_TYPE, InternalError } from "../domain/error";
 import { In, ObjectLiteral, ObjectType, SelectQueryBuilder } from "typeorm";
 
@@ -52,7 +52,7 @@ export const applyRestQuery = async <T extends ObjectLiteral>(entity: T, restQue
 
             const { _sort, _order, _start, _end } = restQuery;
             const filterFields = Object.keys(restQuery).filter(f => !f.startsWith("_"))
-            console.log({ filterFields })
+            console.log({ filterFields, restQuery })
 
             if (filterFields.length > 0) {
                 for (const field of filterFields) {
@@ -148,7 +148,6 @@ export class AdminBaseController<T = ObjectLiteral> {
     }
 
     applyFilter(queryBuilder: SelectQueryBuilder<ObjectLiteral>, field: string, value: any) {
-        console.log("DEFAULT FILTER", field)
         queryBuilder.andWhere({ [field]: value });
     }
 
@@ -177,6 +176,7 @@ export class AdminBaseController<T = ObjectLiteral> {
 
                     const { _sort, _order, _start, _end } = query;
                     const filterFields = Object.keys(query).filter(f => !f.startsWith("_"))
+
                     console.log({ filterFields })
 
                     if (filterFields.length > 0) {
@@ -227,7 +227,7 @@ export class AdminBaseController<T = ObjectLiteral> {
                 const items = await queryBuilder.getRawMany()
                 const count = await queryBuilder.getCount()
 
-                console.log(items, count)
+                console.log({ count })
 
                 const response = new HttpResponseOK(items);
                 response.setHeader("Content-Range", `measurements 0-20/${count}`);
@@ -260,6 +260,29 @@ export class AdminBaseController<T = ObjectLiteral> {
         catch (err) {
             return errorToResponse(err)
         }
+    }
+
+    @Put('/:id')
+    async updateOne({ request }: Context) {
+        try {
+            const { id } = request.params;
+            const prepared = await this.beforeUpdate(request.body);
+            console.log('PUT', prepared)
+
+            const item = await this.entity.update(id, prepared);
+            const modified = await this.afterUpdate(prepared, item);
+
+            return new HttpResponseOK({ id });
+        }
+        catch (err) {
+            return errorToResponse(err)
+        }
+    }
+    async beforeUpdate(raw: any) {
+        return raw;
+    }
+    async afterUpdate(raw: any, item: T) {
+        return item;
     }
 
     @Post('')

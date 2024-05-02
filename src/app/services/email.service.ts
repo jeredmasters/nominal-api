@@ -4,10 +4,10 @@ import { EventLogRepository } from "../repositories/event_log.repo";
 import { IEnrollment } from "../repositories/enrollment.repo/enrollment.entity";
 import { VoterRepository } from "../repositories/voter.repo";
 import { ElectionRepository } from "../repositories/election.repo";
-import { InviteProps } from "../domain/enrollment";
 import { EmailTokenRepository } from "../repositories/email-token.repo";
-import { EMAIL_TOKEN_ACTION, EMAIL_TOKEN_STATUS } from "../repositories/email-token.repo/email-token.entity";
+import { EMAIL_TOKEN_ACTION, EMAIL_TOKEN_STATUS, IEmailToken } from "../repositories/email-token.repo/email-token.entity";
 import { env } from "../util/env";
+import { EnrollmentInviteProps, LoginInviteProps } from "../domain/enrollment";
 
 export class EmailService {
     @dependency
@@ -25,7 +25,7 @@ export class EmailService {
     @dependency
     emailTokenRepository: EmailTokenRepository;
 
-    async sendInvitation(enrollment: IEnrollment) {
+    async sendEnrollmentInvitation(enrollment: IEnrollment) {
         const voter = await this.voterRepository.getByIdOrThrow(enrollment.voter_id)
         const election = await this.electionRepository.getByIdOrThrow(enrollment.election_id)
 
@@ -36,7 +36,7 @@ export class EmailService {
             election_id: election.id,
         })
 
-        const invite: InviteProps = {
+        const invite: EnrollmentInviteProps = {
             email: voter.email,
             first_name: voter.first_name,
             last_name: voter.last_name,
@@ -47,4 +47,19 @@ export class EmailService {
 
         return this.sendgridResource.sendInvite(invite);
     }
+
+    async sendInvitation(emailToken: IEmailToken) {
+        const voter = await this.voterRepository.getByIdOrThrow(emailToken.voter_id);
+
+        const invite: LoginInviteProps = {
+            email: voter.email,
+            first_name: voter.first_name,
+            last_name: voter.last_name,
+            token_url: env.consumerFeUrl() + "/email-token?t=" + emailToken.id,
+        }
+
+        return this.sendgridResource.sendInvite(invite);
+    }
+
+
 }

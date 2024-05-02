@@ -1,20 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { ForeignKey } from "../../util/foreign-key";
-import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base";
-import { EmailTokenEntity } from "../email-token.repo/email-token.entity";
 
-export enum EMAIL_TOKEN_ACTION {
-  LOGIN = "LOGIN",
-  SINGLE_VOTE = "SINGLE_VOTE"
-}
-
-export enum EMAIL_TOKEN_STATUS {
-  UNUSED = "UNUSED",
-  OPENED = "OPENED",
-  VOTED = 'VOTED',
-  EXPIRED = "EXPIRED",
-  DISABLED = "DISABLED"
+export enum ADMIN_ROLE {
+  SUPER_ADMIN = "SUPER_ADMIN",
+  OPS = "OPS",
+  ORGANISATION = "ORGANISATION",
 }
 
 export interface IAdminUser extends IUnsavedAdminUser {
@@ -23,9 +13,10 @@ export interface IAdminUser extends IUnsavedAdminUser {
 }
 
 export interface IUnsavedAdminUser extends IBaseUnsaved {
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
-
+  role: ADMIN_ROLE;
 }
 
 @Entity("admin_users")
@@ -40,8 +31,14 @@ export class AdminUserEntity extends BaseEntity implements IAdminUser {
   updated_at: Date;
 
   @Column()
-  name: string;
+  first_name: string;
+
+  @Column()
+  last_name: string;
 
   @Column()
   email: string;
+
+  @Column()
+  role: ADMIN_ROLE;
 }

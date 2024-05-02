@@ -34,6 +34,10 @@ export class EnrollmentRepository {
       .getRawMany();
   }
 
+  async getEnrollment(voter_id: string, election_id: string) {
+    return await EnrollmentEntity.findOneBy({ voter_id, election_id });
+  }
+
   cache = new PromiseCacheManager();
   async getOrCreateEnrollment(voter_id: string, election_id: string) {
     return this.cache.call(`getOrCreateEnrollment(${voter_id},${election_id})`, {}, async () => {

@@ -13,16 +13,16 @@ export class VoterController extends AdminBaseController {
 
     switch (field) {
       case "q":
-        queryBuilder.where('(v.first_name ilike :q OR v.last_name ilike :q)', { q: value });
+        queryBuilder.andWhere('(v.first_name ilike :q OR v.last_name ilike :q)', { q: value });
         break;
 
       case "election_id":
         queryBuilder.leftJoin(EnrollmentEntity, 'r', "v.id = r.voter_id")
-        queryBuilder.where('r.election_id = :election_id', { election_id: value })
+        queryBuilder.andWhere('r.election_id = :election_id', { election_id: value })
         break;
 
       default:
-        queryBuilder.andWhere({ [field]: queryBuilder[field] });
+        queryBuilder.andWhere({ [field]: value });
         break;
 
     }

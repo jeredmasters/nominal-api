@@ -30,36 +30,36 @@ export class RunningRepository {
     return ElectionEntity
       .createQueryBuilder('el')
       .select('el.*')
-      .leftJoin(RunningEntity, 'r', 'el.id = r.election_id')
+      .leftJoin(RunningEntity, 'r', 'el.id = r.ballot_id')
       .where('r.candidate_id = :candidate_id', { candidate_id })
       .getRawMany();
   }
 
 
-  getRunningCandidates(election_id: string) {
+  getRunningCandidates(ballot_id: string) {
     return CandidateEntity
       .createQueryBuilder('c')
       .select('c.*')
       .leftJoin(RunningEntity, 'r', 'c.id = r.candidate_id')
-      .where('r.election_id = :election_id', { election_id })
+      .where('r.ballot_id = :ballot_id', { ballot_id })
       .getRawMany();
   }
 
   cache = new PromiseCacheManager()
-  async getOrCreateRunning(candidate_id: string, election_id: string) {
-    return this.cache.call(`getOrCreateRunning(${candidate_id},${election_id})`, {}, async () => {
-      const exists = await RunningEntity.findOneBy({ candidate_id, election_id });
+  async getOrCreateRunning(candidate_id: string, ballot_id: string) {
+    return this.cache.call(`getOrCreateRunning(${candidate_id},${ballot_id})`, {}, async () => {
+      const exists = await RunningEntity.findOneBy({ candidate_id, ballot_id });
       if (exists) {
         return exists;
       }
       return RunningEntity.save({
-        election_id,
+        ballot_id,
         candidate_id
       });
     });
   }
 
-  getByElectionId(election_id: string): Promise<Array<IRunning>> {
-    return RunningEntity.findBy({ election_id })
+  getByElectionId(ballot_id: string): Promise<Array<IRunning>> {
+    return RunningEntity.findBy({ ballot_id })
   }
 }

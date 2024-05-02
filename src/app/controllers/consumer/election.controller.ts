@@ -9,6 +9,8 @@ import { EnrollmentRepository } from "../../repositories/enrollment.repo";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { RunningRepository } from "../../repositories/running.repo";
 import { errorToResponse } from "../util";
+import { BallotRepository } from "../../repositories/ballot.repo";
+import { EnrollmentService } from "../../services/enrollment.service";
 
 
 export class ElectionController {
@@ -19,13 +21,16 @@ export class ElectionController {
   private readonly enrollemntRepository: EnrollmentRepository;
 
   @dependency
-  private readonly candidateRepository: CandidateRepository;
+  private readonly ballotRepo: BallotRepository;
 
   @dependency
   private readonly authService: AuthService;
 
   @dependency
   private readonly runningRepository: RunningRepository;
+
+  @dependency
+  private readonly enrollmentService: EnrollmentService;
 
   @Get("")
   async getRules({ request, user }: Context<IVoter>) {
@@ -48,28 +53,31 @@ export class ElectionController {
     }
   }
 
-  @Get("/:id/candidates")
-  async getCandidates({ request }: Context) {
+  @Get("/:id/ballots")
+  async getBallots({ request, user }: Context<IVoter>) {
     try {
       const { id } = request.params;
-      const authorization = request.headers['Authorization'];
-      const voter = await this.authService.validate(authorization);
 
-      const elections = await this.enrollemntRepository.getEnrolledElections(voter.id)
-      if (elections.find(e => e.id === id) === undefined) {
+      if (!await this.enrollmentService.isEnrolled(user.id, id)) {
         throw new InternalError({
-          code: "election_not_found",
-          func: "getCandidates",
-          context: id,
-          type: ERROR_TYPE.NOT_FOUND
-        })
+          code: "not_enrolled",
+          func: "getBallots",
+          type: ERROR_TYPE.NOT_FOUND,
+          meta: {
+            voter_id: user.id,
+            election_id: id
+          }
+        });
       }
 
+      const ballots = await this.ballotRepo.getByElectionId(id)
+
       return new HttpResponseOK(
-        await this.runningRepository.getRunningCandidates(id)
+        ballots
       );
     } catch (err) {
       return errorToResponse(err)
     }
   }
+
 }
