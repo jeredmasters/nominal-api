@@ -11,10 +11,6 @@ permissions:
     pattern: "**"
     owner: ec2-user
 hooks:
-  ApplicationStop:
-    - location: scripts/application_stop..sh
-      timeout: 3600
-      runas: root
   BeforeInstall:
     - location: scripts/before_install.sh
       timeout: 3600

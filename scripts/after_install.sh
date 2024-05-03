@@ -11,4 +11,6 @@ export NVM_DIR="$HOME/.nvm"
 cd /var/app
 npm install
 npm install typeorm
+
+sudo systemctl stop nominal-api
 npm run migrations
