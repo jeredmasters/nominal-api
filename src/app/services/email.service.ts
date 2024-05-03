@@ -41,7 +41,7 @@ export class EmailService {
             first_name: voter.first_name,
             last_name: voter.last_name,
             vote_name: election.label,
-            token_url: env.consumerFeUrl() + "/email-token?t=" + emailToken.id,
+            token_url: env.consumerFeUrl() + "/email-token#" + emailToken.id,
             closes_at: election.closes_at.toDateString()
         }
 
@@ -55,7 +55,7 @@ export class EmailService {
             email: voter.email,
             first_name: voter.first_name,
             last_name: voter.last_name,
-            token_url: env.consumerFeUrl() + "/email-token?t=" + emailToken.id,
+            token_url: env.consumerFeUrl() + "/email-token#" + emailToken.id,
         }
 
         return this.sendgridResource.sendInvite(invite);

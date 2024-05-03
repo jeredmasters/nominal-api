@@ -15,7 +15,6 @@ export class ElectionController extends AdminBaseController {
   @dependency
   runningRepository: RunningRepository;
 
-
   applyFilter(queryBuilder: SelectQueryBuilder<ObjectLiteral>, field: string, value: any) {
     switch (field) {
       case "candidate_id":
