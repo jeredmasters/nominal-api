@@ -25,7 +25,7 @@ export class ElectionController extends AdminBaseController {
       case "voter_id":
         queryBuilder.leftJoin(EnrollmentEntity, 'r', "e.id = r.election_id")
         queryBuilder.andWhere('r.voter_id = :voter_id', { voter_id: value })
-        queryBuilder.select("e.*, r.id as enrollment_id")
+        queryBuilder.select(["e.*", "r.id as enrollment_id"])
         return true;
       default:
         queryBuilder.andWhere({ [field]: value });
@@ -39,5 +39,11 @@ export class ElectionController extends AdminBaseController {
       await this.runningRepository.getOrCreateRunning(raw.candidate_id, election.id);
     }
     return election;
+  }
+
+  async beforeQuery(queryBuilder: SelectQueryBuilder<ObjectLiteral>) {
+    queryBuilder.addSelect("(select count(b.id) from ballots b where b.election_id = e.id) as ballot_count");
+    queryBuilder.addSelect("(select count(r.id) from runnings r left join ballots b on r.ballot_id = b.id where b.election_id = e.id) as running_count")
+
   }
 }

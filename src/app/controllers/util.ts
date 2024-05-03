@@ -151,6 +151,10 @@ export class AdminBaseController<T = ObjectLiteral> {
         queryBuilder.andWhere({ [field]: value });
     }
 
+    beforeQuery(queryBuilder: SelectQueryBuilder<ObjectLiteral>) {
+
+    }
+
     @Get('')
     async index(ctx: Context) {
         try {
@@ -223,6 +227,7 @@ export class AdminBaseController<T = ObjectLiteral> {
             }
 
             try {
+                this.beforeQuery(queryBuilder);
                 console.log(queryBuilder.getSql(), queryBuilder.getParameters())
                 const items = await queryBuilder.getRawMany()
                 const count = await queryBuilder.getCount()

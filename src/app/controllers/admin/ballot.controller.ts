@@ -40,4 +40,8 @@ export class BallotController extends AdminBaseController {
     }
     return election;
   }
+
+  async beforeQuery(queryBuilder: SelectQueryBuilder<ObjectLiteral>) {
+    queryBuilder.addSelect("(select count(r.id) from runnings r where r.ballot_id = b.id) as running_count")
+  }
 }
