@@ -1,13 +1,13 @@
 import { dependency } from "@foal/core";
 import { SendgridResource } from "../resource/sendgrid";
 import { EventLogRepository } from "../repositories/event_log.repo";
-import { IEnrollment } from "../repositories/enrollment.repo/enrollment.entity";
 import { VoterRepository } from "../repositories/voter.repo";
 import { ElectionRepository } from "../repositories/election.repo";
 import { EmailTokenRepository } from "../repositories/email-token.repo";
 import { EMAIL_TOKEN_ACTION, EMAIL_TOKEN_STATUS, IEmailToken } from "../repositories/email-token.repo/email-token.entity";
 import { env } from "../util/env";
 import { EnrollmentInviteProps, LoginInviteProps } from "../domain/enrollment";
+import { IVoter } from "../repositories/voter.repo/voter.entity";
 
 export class EmailService {
     @dependency
@@ -25,9 +25,8 @@ export class EmailService {
     @dependency
     emailTokenRepository: EmailTokenRepository;
 
-    async sendEnrollmentInvitation(enrollment: IEnrollment) {
-        const voter = await this.voterRepository.getByIdOrThrow(enrollment.voter_id)
-        const election = await this.electionRepository.getByIdOrThrow(enrollment.election_id)
+    async sendEnrollmentInvitation(voter: IVoter) {
+        const election = await this.electionRepository.getByIdOrThrow(voter.election_id)
 
         const emailToken = await this.emailTokenRepository.save({
             action: EMAIL_TOKEN_ACTION.SINGLE_VOTE,

@@ -34,7 +34,7 @@ export class BallotController {
     try {
       const { id } = request.params;
       const ballot = await this.ballotRepo.getByIdOrThrow(id);
-      if (!await this.enrollmentService.isEnrolled(user.id, ballot.election_id)) {
+      if (!await this.enrollmentService.isEligible(user, ballot)) {
         throw new InternalError({
           code: "election_not_found",
           func: "getBallots",
@@ -53,7 +53,7 @@ export class BallotController {
     try {
       const { id } = request.params;
       const ballot = await this.ballotRepo.getByIdOrThrow(id)
-      if (!await this.enrollmentService.isEnrolled(user.id, ballot.election_id)) {
+      if (!await this.enrollmentService.isEligible(user, ballot)) {
         throw new InternalError({
           code: "election_not_found",
           func: "getBallots",

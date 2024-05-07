@@ -1,0 +1,309 @@
+Digital Voting Transformation
+NUS Chief Technology Officer Course
+March 2024
+
+This presentation has been prepared by Jered Masters for submission to the Chief Technology Officer program, June 2023 batch.
+
+The company discussed herein is based upon a client I have worked with in the past, but the name and some details have been changed.
+
+
+
+Section I
+Project Proposal / Problem Statement
+
+1.     Identify a suitable organisation for the project (could be real or hypothetical).​
+ 
+2.     ​Conduct a preliminary analysis of the organisation's current state, key challenges, and consumer pain points (if any). Examples: Outdated legacy systems, lack of data-driven insights, limited online presence, etc. ​
+ 
+3.     ​Ascertain the problem statement(s) regarding the Digital Transformation Strategy (Write down specific problems that must be resolved to enhance technology and digital tool usage).
+
+
+Business
+Mid size business, 270 employees
+Runs small to mid size votes for schools, universities, and home owner clubs.
+Elections are administered using paper ballots after the candidates are chosen.
+Votes are then counted manually under supervision.
+Voting Systems Inc
+
+Key Challenge: Trust
+Verifiable
+Each voter need to know that their individual vote is remembered and stored in the system and has not been changed.
+Inspectable
+Scalable
+The system needs to be able to aggregate the votes
+Computable
+Many different voting styles need to be accounted for, first-past-the-post, preference.
+Anonymity 
+All voters need to be able to be able to hide their identity and their vote from the public.
+
+Technology / Process
+1. Contract and Planning
+Customers reach out and engage the company
+Projections about the size and complexity of the voting process must be made to properly estimate the cost of the managing the vote.
+Plans are drawn up, permits are requested
+2. Enrollment
+Candidates/topics must be registered to be on the ballot.
+Voters must enroll to be eligible to vote on the day.
+Support staff must be available to handle enrollment difficulties.
+
+3. Setup
+Rosters for staffing are prepared. Admin work is required for scheduling, salaries, ordering materials.
+Ballots are printed, checked and counted.
+Polling stations are setup and placed.
+
+
+3. Execution
+Voters must physically travel to the polling locations, and often must remain in a queue to wait for their turn.
+All voting is supervised and checked.
+
+
+3. Counting 
+Ballot boxes are moved 
+Votes must be manually counted under strict supervision by a group of representatives, intended to create an impartial consensus.
+
+
+
+Problems
+1. Contract and Planning
+Difficult and cumbersome for the client to properly estimate the size of the vote.
+2. Enrollment
+Slow and cumbersome to be enrolled.
+
+3. Setup
+Requires a lot of admin work and fabrication of single use materials.
+
+
+3. Execution
+Causes a lot of wasted time and uncomfortable situations
+Voters are less likely to attend due to frictions
+
+
+3. Counting 
+Counting is slow, and despite honest intentions, mistakes still happen
+Difficult for voters to truly trust the process
+
+
+
+Problem Statement 
+The process for creating a poll or election is too cumbersome that it restricts the frequency with with polls are held, resulting in a low resolution democracy.
+The friction on voters to attend and cast their vote discourages engagement, resulting in a less representative democracy.
+Despite the thoroughness of the people, mistakes still happen and trust can be low.
+
+Project Proposal
+Implement a blockchain based voting system that leverages ZK-SNARK algorithms to securely and anonymously collect votes, then aggregate them in a provable, inspectable way.
+
+Section II
+Digital Business Strategy
+
+DBS
+1.     Conduct a focused analysis of the organisation's environment, industry, market positioning, changing consumer preferences, and digital trends that could impact business.​
+ 
+2.     Assess the organisation's digital readiness (current technological capabilities, digital infrastructure, and how it manages consumer data). Check how well it integrates with digital platforms. Identify areas that need improvement for a successful digital transformation.​
+ 
+3.     Identify potential opportunities and untapped markets for your company. Specify the area and its details. Explain how you can provide value and the reasons behind your choice.​
+
+
+Industry
+DRE
+Paper ballot
+Lever Machines
+Automation and digitisation increasing over time
+
+The general public wants convenience, now more than ever before. Most people have become accustomed to ease and convenience.
+
+Trust in voting and democracies is at an all time low. Introducing an element of opacity will only fuel these issues. Any solution must be above reproach.
+
+The Public: Conflicting Trends
+Public Attitude
+Customer Preferences
+https://www.pewresearch.org/politics/2023/09/19/public-trust-in-government-1958-2023/
+
+https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=fa081b594a937339c2f054ccf488e8dfb60af7cc
+
+https://www.smartinsights.com/ecommerce/customer-experience-examples/convenience-is-driving-e-commerce-growth-and-influencing-consumer-decisions/
+
+Current Technological Ability
+Digital infrastructure
+Technology Teams
+Data Management
+
+Opportunities 
+Government
+Move Towards More Referendums
+Small Communities
+Governments already well established voting systems, however if a trustworthy and well built solution became available, it would be very interesting to many governments.
+
+As the cost of running one of these elections decreased significantly and the effort spent on dealing with each client can be cut to nearly zero, a large number of smaller client's would suddenly come into scope for the business.
+Similarly, as the effort required from the constituent public is dramatically decreased, the number of issue that individuals would be willing to vote on would increase.
+Large Companies
+The reduced cost of running multiple polls at the same time opens the door to running AGM resolutions through e-voting platforms.
+
+Section III
+Digital Transformation Strategy
+
+DTS
+1.     Examine the Digital Business Strategy (DBS). Find out how digital technologies create new value or enhance productivity. Describe how these changes affect consumers, operations, processes, and people.​
+ 
+2.     Define strategic goals for digital transformation (include objectives inside and outside the company).​
+ 
+3.     Make a clear plan. List important actions and rank them by impact and feasibility. Think about budget, tech use, and change in the organisation. Also, think about collaboration and scaling using a buy-build-borrow strategy.​
+
+
+III.1 New Digital Technologies
+A new mobile app for the business will allow users to be access the voting services more conveniently from the comfort of their own homes.
+a) New Mobile App
+With a new organised database, the company can gain better insights into how different demographics learn and respond to marketing. 
+b) Organised Database
+Operationally, the process of setting up a vote and delivering the outcome becomes significantly cheaper and faster when it can be done without physical polling booths and stationing staff onsite.
+c) Digital Platform
+Bringing in a cryptographic algorithm for anonymous, provable aggregation of users data will help to resolve the trust problem in the e-voting industry.
+d) ZK-SNARK
+
+III.1.a New Mobile App
+Faster and more convenient
+Increase voting participation by allowing people to vote from home, from work or on commute.
+
+Flexibility
+Allow people to change their vote at any time before the polling closes
+Case studies show that swing voters are more likely to place a vote if they know they can change it later, resulting in a high number of voters having placed votes before polling closes.
+
+Accountability and trust
+The cryptographic tools for preparing and submitting their vote and later verifying the vote in the blockchain can be built right into the app for ease and convenience.
+The source code for the app can be published to the internet so that tech savvy users can validate the verification is being done correctly.
+
+III.1.b Organised Database
+Fast registration of new polls
+The current process of registering new polls is mostly paper based, then information is manually copied into spreadsheets. Slow and efficient.
+Using an organised database with a high quality user interface, client's can easily register new polls, using previous polls as template for the next one.
+
+Insights
+By having users answer some questions at the start of the poll, users can categorised into demographics. 
+These demographics can be attached to their vote, without attaching any identity information.
+This can then be used to generate insights into voting behaviour and demographics.
+
+III.1.c Digital Platform
+Business Agility
+Since there is no need for a physical polling station for most votes, the overhead per vote for the business is extremely low.
+The business can generally be much more agile, being able to quickly respond to new market opportunities. This is essential for the business to survive the digital revolution and scale.
+
+III.1.d ZK-SNARK
+Highly innovative algorithm that unlocks huge potential.
+Can be used to securely achieve the essential components of a good voting system
+Any voter can check their vote has been counted, and is still stored in the database
+Any voter can check their vote has not been changed
+All voter information is kept anonymous from other voters
+Any observer can check that the resulting numbers are a true and accurate sum of votes without knowing the source votes
+
+This very intelligent algorithm is already in use in the crypto industry to prove that a custody provider (an exchange for example) does still hold all of the assets that users have deposited while preserving the privacy of all users.
+
+Strategic Goals
+Build out Digital Platform
+Educate Public about Cryptographic Technologies
+Retrain Existing Staff
+
+Plan
+Action
+Description
+Priority
+Client research
+Reach out to existing client and gather feedback on the proposal. Reach out to prospective clients
+Plan out the project
+Scope out different phases and prepare a budget for each
+Prepare technical specification
+Database design, system architecture, data analytics processes
+Hire team
+Software developers, database designers
+Begin development
+Setup agile development teams. Supervise sprint planning meetings
+Prepare re-training materials
+Train existing operations team in how to use new
+
+Technology - Platform
+Function
+Candidates
+Database
+For the core platform we can use a common relational database such as Postgres or Microsoft SQL. These options provide enough flexibility and functionality that the business will likely not need to make any major upgrades during its lifespan or be limited by the database technology.
+Core API
+The performance requirements for this service are quite low. Client's and end users will likely tolerate very slow server speeds, so the dev team doesn’t need to commit to an extremely high performance programming language or server technology.
+The major concern is scalability, so we need to be careful to select a programming language and platform that can handle multi threading on the incoming requests handling.
+Cloud hosting
+Cloud hosting is quite common place and selecting a hosting provider is quite straight forward. AWS, GCP, Azure are all viable candidates.
+User Interface
+The user interface will require three different components:
+Desktop web interface for the the companies/clients to register their poll and review the results. This is best developed use one of the popular frontend frameworks such as ReactJS, Angular or Vue
+Mobile app and website for the voters to cast their vote. While most companies would prefer that users can vote from both web and mobile app, it is critical that we only enable the mobile app to ensure the security of the cryptographic tools.
+Web interface (mobile and desktop) for public users to review the results of a poll, and explore the blockchain to verify the security of the vote.
+
+Technology - Cryptography
+Function
+Candidates
+Cryptographic Technology
+The algorithms that make the voting process secure, anonymous and verifiable are not at all trivial to develop. This is a novel use of SK-SNARK technology, as such there are no off-the-shelf products available for use. 
+Proven (Raposa) is a very clever startup in the EU who have developed very similar technology for a similar purpose. I believe the would be an ideal partner in this venture.
+Blockchain hosting
+Project Management
+Learning tools
+
+Team
+Action
+Description
+Priority
+Client research
+Reach out to existing client and gather feedback on the proposal. Reach out to prospective clients
+Plan out the project
+Scope out different phases and prepare a budget for each
+Prepare technicial specification
+Database design, system architecture, data analytics processes
+Hire team
+Software developers, database designers
+Begin development
+Setup agile development teams. Supervise sprint planning meetings
+Prepare retraining materials
+Train operations team in how to use new
+
+Budget
+Action
+Description
+Priority
+Client research
+Reach out to existing client and gather feedback on the proposal. Reach out to prospective clients
+Plan out the project
+Scope out different phases and prepare a budget for each
+Prepare technicial specification
+Database design, system architecture, data analytics processes
+Hire team
+Software developers, database designers
+Begin development
+Setup agile development teams. Supervise sprint planning meetings
+Prepare retraining materials
+Train operations team in how to use new
+
+Section IV
+Additional Issues and Technologies
+
+Additional
+1.     Identify issues related to Portfolio Management, Enterprise Architecture, Cloud Strategy, Cybersecurity, and Data Analytics that might impact DBS and DTS.​
+ 
+2.     Think about challenges and benefits of collaboration and scaling in the context of DBS and DTS. Jot down your insights about how collaboration and scaling could affect the success of these strategies.​
+ 
+3.     Note down specific examples of how emerging technologies can be relevant and useful in shaping your DBS and DTS.​
+
+
+
+Cyber Security
+Cyber security would be a major concern for a voting system. Fortunately in this case, there is no risk of an attacker changing a vote or submitting fraudulent votes into the system. However one concerning area is that an attacker might find a way to see which way the voters are voting.
+
+While the area of concern is different compared to most e-Voting systems, it is still a serious concern as well functioning democratic system can only exist where votes are anonymous.
+
+
+
+
+Emerging Technologies
+Sustainable Computing
+AI / Machine Learning
+
+Sustainable Computing
+https://www.weforum.org/publications/top-10-emerging-technologies-of-2023/
+
+AI / Machine Learning
+https://www.simplilearn.com/top-technology-trends-and-jobs-article

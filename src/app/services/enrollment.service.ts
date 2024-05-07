@@ -1,13 +1,14 @@
 import { dependency } from "@foal/core";
-import { EnrollmentRepository } from "../repositories/enrollment.repo";
+import { IVoter } from "../repositories/voter.repo/voter.entity";
+import { IBallot } from "../repositories/ballot.repo/ballot.entity";
 
 export class EnrollmentService {
-    @dependency
-    enrollmentRepository: EnrollmentRepository;
 
-    async isEnrolled(voter_id: string, election_id: string): Promise<boolean> {
-        const exists = await this.enrollmentRepository.getEnrollment(voter_id, election_id);
+    async isEnrolled(voter: IVoter, election_id: string): Promise<boolean> {
+        return voter.election_id === election_id;
+    }
+    async isEligible(voter: IVoter, ballot: IBallot): Promise<boolean> {
+        return voter.election_id === ballot.election_id;
 
-        return !!exists
     }
 }

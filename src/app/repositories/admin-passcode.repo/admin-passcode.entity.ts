@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { IBaseUnsaved } from "../base";
+import { IBaseUnsaved } from "../base-repo";
 import { ForeignKey } from "../../util/foreign-key";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
 

@@ -15,7 +15,6 @@ import { ConsumerAuthService } from "../../services/consumer-auth.service";
 import { errorToResponse } from "../util";
 import { EventLogRepository } from "../../repositories/event_log.repo";
 import { AuthService } from "../../services/auth.service";
-import { EnrollmentController } from "../admin/enrollment.controller";
 import { CandidateController } from "./candidate.controller";
 import { ResponseController } from "./response.controller";
 import { EMAIL_TOKEN_STATUS } from "../../repositories/email-token.repo/email-token.entity";
@@ -115,7 +114,6 @@ export class AuthController {
     controller("/elections", ElectionController),
     controller("/candidates", CandidateController),
     controller("/responses", ResponseController),
-    controller("/enrollments", EnrollmentController),
   ];
 
   @Get("/status")

@@ -22,7 +22,7 @@ export class EmailTokenController extends AdminBaseController {
         queryBuilder.andWhere('v.organisation_id = :organisation_id', { organisation_id: value })
         return true;
       default:
-        queryBuilder.andWhere({ [field]: value });
+        super.applyFilter(queryBuilder, field, value);
         break;
     }
     return false

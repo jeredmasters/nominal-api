@@ -1,13 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
-import { IBaseUnsaved } from "../base";
+import { IBaseUnsaved } from "../base-repo";
 import { ElectionEntity } from "../election.repo/election.entity";
 import { EmailTokenEntity } from "../email-token.repo/email-token.entity";
 import { CandidateEntity } from "../candidate.repo/candidate.entity";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { ApiTokenEntity } from "../api-token.repo/api-token.entity";
-import { EnrollmentEntity } from "../enrollment.repo/enrollment.entity";
 import { ResponseEntity } from "../response.repo/reponse.entity";
 
 export enum EVENT_PRIMARY {
@@ -73,9 +72,6 @@ export class EventLogEntity extends BaseEntity implements IEventLog {
 
   @ForeignKey(ApiTokenEntity, { nullable: true })
   api_token_id?: string;
-
-  @ForeignKey(EnrollmentEntity, { nullable: true })
-  enrollment_id?: string;
 
   @ForeignKey(ResponseEntity, { nullable: true })
   response_id?: string;

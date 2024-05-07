@@ -2,7 +2,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
-import { IBaseUnsaved } from "../base";
+import { IBaseUnsaved } from "../base-repo";
+import { ElectionEntity } from "../election.repo/election.entity";
+import { VoterDigestEntity } from "../voter_digest.repo/voter_digest.entity";
 
 export interface IVoter extends IUnsavedVoter {
   id: string;
@@ -10,9 +12,11 @@ export interface IVoter extends IUnsavedVoter {
 }
 
 export interface IUnsavedVoter extends IBaseUnsaved {
-  organisation_id: string;
+  election_id: string;
+  voter_digest_id?: string;
   first_name: string;
   last_name: string;
+  preferred_name?: string;
   email: string;
 }
 
@@ -27,14 +31,20 @@ export class VoterEntity extends BaseEntity implements IVoter {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ForeignKey(OrganisationEntity)
-  organisation_id: string;
+  @ForeignKey(ElectionEntity)
+  election_id: string;
+
+  @ForeignKey(VoterDigestEntity, { nullable: true })
+  voter_digest_id?: string;
 
   @Column()
   first_name: string;
 
   @Column()
   last_name: string;
+
+  @Column({ nullable: true })
+  preferred_name?: string;
 
   @Column()
   email: string;

@@ -1,6 +1,12 @@
 {
   "settings": {
     "debug": true,
-    "loggerFormat": "dev"
+    "loggerFormat": "dev",
+    "disk": {
+      "driver": "local",
+      "local": {
+        "directory": "uploaded"
+      }
+    }
   }
 }

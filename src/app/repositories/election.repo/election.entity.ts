@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
-import { IBaseUnsaved } from "../base";
+import { IBaseUnsaved } from "../base-repo";
 
 export interface IElection extends IUnsavedElection {
   id: string;

@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
-import { IBaseUnsaved } from "../base";
+import { IBaseUnsaved } from "../base-repo";
 import { EmailTokenEntity } from "../email-token.repo/email-token.entity";
 
 export interface IApiToken extends IUnsavedApiToken {

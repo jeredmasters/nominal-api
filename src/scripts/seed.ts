@@ -9,7 +9,6 @@ import { AdminUserRepository } from "../app/repositories/admin-user.repo";
 import { AdminPasscodeRepository } from "../app/repositories/admin-passcode.repo";
 import { PASSCODE_TYPE } from "../app/repositories/admin-passcode.repo/admin-passcode.entity";
 import { randBool, randInt, randPick } from "../app/util/rand";
-import { EnrollmentRepository } from "../app/repositories/enrollment.repo";
 import { ONE_DAY } from "../app/const/date";
 import { RunningRepository } from "../app/repositories/running.repo";
 import { ElectionRepository } from "../app/repositories/election.repo";
@@ -73,7 +72,6 @@ export async function main() {
     const runningRepo = serviceManager.get(RunningRepository);
     const candidateRepo = serviceManager.get(CandidateRepository);
     const voterRepo = serviceManager.get(VoterRepository);
-    const enrollmentRepo = serviceManager.get(EnrollmentRepository);
     const adminUserRepo = serviceManager.get(AdminUserRepository);
     const adminPasscodeRepo = serviceManager.get(AdminPasscodeRepository);
 
@@ -117,6 +115,13 @@ export async function main() {
                 closes_at: new Date(start + randInt(10, 30) * ONE_DAY)
             })
 
+            const voters = await promiseAll(randInt(10, 1000), () => voterRepo.save({
+                first_name: randFirstName(),
+                last_name: randLastName(),
+                email: "person@example.com",
+                election_id: election.id
+            }))
+
             return await promiseAll(randInt(1, 3), () => {
                 const eballot = randElection();
 
@@ -134,21 +139,8 @@ export async function main() {
             organisation_id: org.id
         }))
 
-        const voters = await promiseAll(randInt(10, 1000), () => voterRepo.save({
-            first_name: randFirstName(),
-            last_name: randLastName(),
-            email: "person@example.com",
-            organisation_id: org.id
-        }))
 
         console.log("Elections, candidates and voters created")
-
-
-        for (let en = voters.length * 5; en > 0; en--) {
-            const voter = randPick(voters);
-            const ballot = randPick(ballots);
-            enrollmentRepo.getOrCreateEnrollment(voter.id, ballot.election_id)
-        }
 
         for (let en = candidates.length * 5; en > 0; en--) {
             const candidate = randPick(candidates);

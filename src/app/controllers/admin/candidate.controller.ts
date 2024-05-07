@@ -22,7 +22,7 @@ export class CandidateController extends AdminBaseController {
         queryBuilder.andWhere('r.ballot_id = :ballot_id', { ballot_id: value })
         return true;
       default:
-        queryBuilder.andWhere({ [field]: value });
+        super.applyFilter(queryBuilder, field, value);
         break;
     }
     return false

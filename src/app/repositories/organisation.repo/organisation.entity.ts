@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { IBaseUnsaved } from "../base";
+import { IBaseUnsaved } from "../base-repo";
 
 export interface IOrganisation extends IUnsavedOrganisation {
   id: string;

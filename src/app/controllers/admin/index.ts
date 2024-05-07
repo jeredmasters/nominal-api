@@ -23,10 +23,12 @@ import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { IAdminUser } from "../../repositories/admin-user.repo/admin-user.entity";
 import { RunningController } from "./running.controller";
 import { CandidateController } from "./candidate.controller";
-import { EnrollmentController } from "./enrollment.controller";
 import { BallotController } from "./ballot.controller";
 import { AdminUserController } from "./admin-user.controller";
 import { env } from "../../util/env";
+import { VoterDigestController } from "./voter_digest.controller";
+import { VoterTagEntity } from "../../repositories/voter_tag.repo/voter_tag.entity";
+import { voterTagController } from "./voter_tag.controller";
 
 @Hook((ctx) => (response) => {
   response.setHeader(
@@ -85,7 +87,6 @@ export class AdminController {
 @Hook(async (ctx, services) => {
   try {
     const authorization = ctx.request.get("Authorization");
-    console.log({ authorization })
     if (!authorization) {
       return errorToResponse(new InternalError({
         code: "authoirzation_missing",
@@ -104,13 +105,14 @@ export class AuthController {
   subControllers = [
     controller("/elections", ElectionController),
     controller("/candidates", CandidateController),
-    controller("/email_tokens", EmailTokenController),
+    controller("/email-tokens", EmailTokenController),
     controller("/event_log", EventLogController),
     controller("/organisations", OrganisationController),
     controller("/responses", ResponseController),
     controller("/voters", VoterController),
+    controller("/voter-digests", VoterDigestController),
+    controller("/voter-tags", voterTagController),
     controller("/runnings", RunningController),
-    controller("/enrollments", EnrollmentController),
     controller("/email-tokens", EmailTokenController),
     controller('/ballots', BallotController),
     controller("/admin-users", AdminUserController)

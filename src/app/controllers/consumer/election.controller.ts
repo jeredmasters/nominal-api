@@ -2,10 +2,8 @@ import { Context, Get, Hook, HttpResponseOK, HttpResponseUnauthorized, Put } fro
 import { dependency } from "@foal/core/lib/core/service-manager";
 
 import { ElectionRepository } from "../../repositories/election.repo";
-import { CandidateRepository } from "../../repositories/candidate.repo";
 import { IVoter } from "../../repositories/voter.repo/voter.entity";
 import { AuthService } from "../../services/auth.service";
-import { EnrollmentRepository } from "../../repositories/enrollment.repo";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { RunningRepository } from "../../repositories/running.repo";
 import { errorToResponse } from "../util";
@@ -16,9 +14,6 @@ import { EnrollmentService } from "../../services/enrollment.service";
 export class ElectionController {
   @dependency
   private readonly electionRepository: ElectionRepository;
-
-  @dependency
-  private readonly enrollemntRepository: EnrollmentRepository;
 
   @dependency
   private readonly ballotRepo: BallotRepository;
@@ -36,7 +31,7 @@ export class ElectionController {
   async getRules({ request, user }: Context<IVoter>) {
     try {
       return new HttpResponseOK(
-        await this.enrollemntRepository.getEnrolledElections(user.id)
+        await this.electionRepository.getById(user.election_id)
       );
     } catch (err) {
       return errorToResponse(err)
@@ -58,7 +53,7 @@ export class ElectionController {
     try {
       const { id } = request.params;
 
-      if (!await this.enrollmentService.isEnrolled(user.id, id)) {
+      if (!await this.enrollmentService.isEnrolled(user, id)) {
         throw new InternalError({
           code: "not_enrolled",
           func: "getBallots",

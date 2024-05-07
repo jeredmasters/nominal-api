@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
-import { IBaseUnsaved } from "../base";
+import { IBaseUnsaved } from "../base-repo";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
 
 export interface IAdminToken extends IUnsavedAdminToken {

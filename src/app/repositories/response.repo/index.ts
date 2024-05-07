@@ -1,27 +1,13 @@
 import { Repository } from "typeorm";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
-import { ResponseEntity, IResponse } from "./reponse.entity";
+import { ResponseEntity, IResponse, IUnsavedResponse } from "./reponse.entity";
+import { BaseRepo } from "../base-repo";
 
-export class ResponseRepository {
-  getAll(): Promise<Array<IResponse>> {
-    return ResponseEntity.find()
+export class ResponseRepository extends BaseRepo<ResponseEntity, IResponse, IUnsavedResponse> {
+  constructor() {
+    super(ResponseEntity, "re")
   }
-  getById(id: string): Promise<IResponse | null> {
-    return ResponseEntity.findOneBy({ id })
-  }
-  async getByIdOrThrow(id: string): Promise<IResponse> {
-    const response = await this.getById(id);
-    if (!response) {
-      throw new InternalError({
-        code: "response_id_not_found",
-        func: "getByIdOrThrow",
-        context: id,
-        meta: { id },
-        type: ERROR_TYPE.NOT_FOUND
-      });
-    }
-    return response;
-  }
+
   getByVoterId(voter_id: string) {
     return ResponseEntity.findBy({ voter_id })
   }

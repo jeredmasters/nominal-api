@@ -1,7 +1,6 @@
 import { AdminBaseController } from "../util";
 import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
 import { RunningEntity } from "../../repositories/running.repo/running.entity";
-import { EnrollmentEntity } from "../../repositories/enrollment.repo/enrollment.entity";
 import { dependency } from "@foal/core";
 import { RunningRepository } from "../../repositories/running.repo";
 import { BallotEntity } from "../../repositories/ballot.repo/ballot.entity";
@@ -28,7 +27,7 @@ export class BallotController extends AdminBaseController {
         queryBuilder.andWhere('e.organisation_id = :organisation_id', { organisation_id: value })
         return true;
       default:
-        queryBuilder.andWhere({ [field]: value });
+        super.applyFilter(queryBuilder, field, value);
         break;
     }
     return false
