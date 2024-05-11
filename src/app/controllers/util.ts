@@ -121,23 +121,6 @@ export const applyRestQuery = async <T extends ObjectLiteral>(entity: T, restQue
 }
 
 
-export const fetchOne = async <T extends ObjectLiteral>(entity: T, id: string, restQuery?: RestQuery): Promise<HttpResponse> => {
-    const queryBuilder: SelectQueryBuilder<T> = entity.createQueryBuilder();
-
-    const value = await queryBuilder.where('id = :id', { id }).getOne();
-
-    if (value) {
-        return new HttpResponseOK(value);
-    }
-    return new HttpResponseNotFound(new InternalError({
-        code: `${entity}_not_found`,
-        func: "fetchOne",
-        type: ERROR_TYPE.NOT_FOUND,
-        context: id
-    }))
-}
-
-
 export class AdminBaseController<T = ObjectLiteral> {
     entity: ObjectLiteral
     alias: string;
@@ -260,7 +243,23 @@ export class AdminBaseController<T = ObjectLiteral> {
     async getOne({ request }: Context) {
         try {
             const { id } = request.params;
-            return fetchOne(this.entity, id)
+
+            console.log(id)
+
+            const queryBuilder: SelectQueryBuilder<ObjectLiteral> = this.entity.createQueryBuilder(this.alias);
+            queryBuilder.select(`${this.alias}.*`);
+            this.beforeQuery(queryBuilder);
+            const value = await queryBuilder.where('id = :id', { id }).getRawOne();
+
+            if (value) {
+                return new HttpResponseOK(value);
+            }
+            throw new InternalError({
+                code: `${this.entity}_not_found`,
+                func: "fetchOne",
+                type: ERROR_TYPE.NOT_FOUND,
+                context: id
+            });
         }
         catch (err) {
             return errorToResponse(err)

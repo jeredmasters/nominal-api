@@ -2,20 +2,30 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base-repo";
-import { OrganisationEntity } from "../organisation.repo/organisation.entity";
+import { ElectionEntity } from "../election.repo/election.entity";
+import { ProfileEntity } from "../profile.repo/profile.entity";
 
 export interface ICandidate extends IUnsavedCandidate {
   id: string;
   created_at: Date;
 }
 
+export enum CANDIDATE_STATUS {
+  NOMINATED = "NOMINATED",
+  VERIFIED = "VERIFIED",
+  REVIEWED = "REVIEWED",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED"
+}
+
 export interface IUnsavedCandidate extends IBaseUnsaved {
-  label: string;
-  description?: string;
-  learn_more_url?: string;
-  image_sm_url?: string;
-  image_lg_url?: string;
-  organisation_id: string;
+  election_id: string;
+  title?: string;
+  first_name: string;
+  last_name: string;
+  email: string
+  preferred_name?: string;
+  status: CANDIDATE_STATUS;
 }
 
 @Entity("candidates")
@@ -29,21 +39,30 @@ export class CandidateEntity extends BaseEntity implements ICandidate {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ForeignKey(OrganisationEntity)
-  organisation_id: string;
+  @ForeignKey(ElectionEntity)
+  election_id: string;
+
+  @Column({ nullable: true })
+  title?: string;
 
   @Column()
-  label: string;
+  first_name: string;
+
+  @Column()
+  last_name: string;
+
+  @Column()
+  email: string;
+
+  @Column({ type: 'int', nullable: true })
+  sort_order: number;
 
   @Column({ nullable: true })
-  description?: string;
+  preferred_name?: string;
+
+  @Column()
+  status: CANDIDATE_STATUS;
 
   @Column({ nullable: true })
-  learn_more_url?: string;
-
-  @Column({ nullable: true })
-  image_sm_url?: string;
-
-  @Column({ nullable: true })
-  image_lg_url?: string;
+  rejected_reason: string;
 }

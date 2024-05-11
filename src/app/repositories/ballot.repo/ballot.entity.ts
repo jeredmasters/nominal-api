@@ -14,6 +14,18 @@ export interface IUnsavedBallot extends IBaseUnsaved {
   copy_ballot_id?: string;
   label: string;
   response_type: RESPONSE_TYPE;
+  short_description?: string;
+  condition?: BallotCondition;
+}
+
+export enum CONDITION_TYPE {
+  TAG_EQUALS = 'TAG_EQUALS'
+}
+export type BallotCondition = BallotCondition_Tag;
+export interface BallotCondition_Tag {
+  type: CONDITION_TYPE.TAG_EQUALS,
+  key: string;
+  value: string;
 }
 
 @Entity("ballots")
@@ -30,12 +42,15 @@ export class BallotEntity extends BaseEntity implements IBallot {
   @ForeignKey(ElectionEntity)
   election_id: string;
 
-  @ForeignKey(BallotEntity, { nullable: true })
-  copy_ballot_id?: string;
-
   @Column()
   label: string;
 
   @Column()
   response_type: RESPONSE_TYPE;
+
+  @Column({ type: 'text', nullable: true })
+  short_description?: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  condition?: BallotCondition;
 }

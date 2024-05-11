@@ -14,6 +14,7 @@ export interface IVoter extends IUnsavedVoter {
 export interface IUnsavedVoter extends IBaseUnsaved {
   election_id: string;
   voter_digest_id?: string;
+  title?: string;
   first_name: string;
   last_name: string;
   preferred_name?: string;
@@ -36,6 +37,9 @@ export class VoterEntity extends BaseEntity implements IVoter {
 
   @ForeignKey(VoterDigestEntity, { nullable: true })
   voter_digest_id?: string;
+
+  @Column()
+  title?: string;
 
   @Column()
   first_name: string;

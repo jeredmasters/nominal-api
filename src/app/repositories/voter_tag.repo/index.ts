@@ -5,4 +5,8 @@ export class VoterTagRepository extends BaseRepo<VoterTagEntity, IVoterTag, IUns
   constructor() {
     super(VoterTagEntity, "vt")
   }
+
+  getByVoterId(voter_id: string) {
+    return VoterTagEntity.findBy({ voter_id });
+  }
 }

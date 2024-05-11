@@ -29,6 +29,7 @@ import { env } from "../../util/env";
 import { VoterDigestController } from "./voter_digest.controller";
 import { VoterTagEntity } from "../../repositories/voter_tag.repo/voter_tag.entity";
 import { voterTagController } from "./voter_tag.controller";
+import { ProfileController } from "./profile.controller";
 
 @Hook((ctx) => (response) => {
   response.setHeader(
@@ -115,7 +116,8 @@ export class AuthController {
     controller("/runnings", RunningController),
     controller("/email-tokens", EmailTokenController),
     controller('/ballots', BallotController),
-    controller("/admin-users", AdminUserController)
+    controller("/admin-users", AdminUserController),
+    controller("/profiles", ProfileController)
   ];
 
   @Get("/status")

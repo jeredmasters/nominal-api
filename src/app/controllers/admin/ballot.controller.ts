@@ -19,7 +19,7 @@ export class BallotController extends AdminBaseController {
   applyFilter(queryBuilder: SelectQueryBuilder<ObjectLiteral>, field: string, value: any) {
     switch (field) {
       case "candidate_id":
-        queryBuilder.leftJoin(RunningEntity, 'r', "e.id = r.ballot_id")
+        queryBuilder.leftJoin(RunningEntity, 'r', "b.id = r.ballot_id")
         queryBuilder.andWhere('r.candidate_id = :candidate_id', { candidate_id: value })
         return true;
       case "organisation_id":

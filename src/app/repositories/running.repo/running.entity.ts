@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn, Unique } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn, Unique, Column } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
 import { CandidateEntity } from "../candidate.repo/candidate.entity";
 import { BallotEntity } from "../ballot.repo/ballot.entity";
 import { IBaseUnsaved } from "../base-repo";
+import { ProfileEntity } from "../profile.repo/profile.entity";
 
 export interface IRunning extends IUnsavedRunning {
   id: string;
@@ -10,8 +11,9 @@ export interface IRunning extends IUnsavedRunning {
 }
 
 export interface IUnsavedRunning extends IBaseUnsaved {
-  candidate_id: string
-  ballot_id: string
+  candidate_id: string;
+  ballot_id: string;
+  profile_id?: string;
 }
 
 @Entity("runnings")
@@ -31,4 +33,7 @@ export class RunningEntity extends BaseEntity implements IRunning {
 
   @ForeignKey(BallotEntity)
   ballot_id: string
+
+  @Column({ nullable: true })
+  profile_id?: string
 }
