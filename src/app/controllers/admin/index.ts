@@ -16,7 +16,6 @@ import { EventLogController } from "./event-log.controller";
 import { OrganisationController } from "./organisation.controller";
 import { ResponseController } from "./response.controller";
 import { VoterController } from "./voter.controller";
-import { EmailTokenRepository } from "../../repositories/email-token.repo";
 import { AdminAuthService } from "../../services/admin-auth.service";
 import { errorToResponse } from "../util";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
@@ -27,9 +26,9 @@ import { BallotController } from "./ballot.controller";
 import { AdminUserController } from "./admin-user.controller";
 import { env } from "../../util/env";
 import { VoterDigestController } from "./voter_digest.controller";
-import { VoterTagEntity } from "../../repositories/voter_tag.repo/voter_tag.entity";
 import { voterTagController } from "./voter_tag.controller";
 import { ProfileController } from "./profile.controller";
+import { EmailBatchController } from "./email-batch.controller";
 
 @Hook((ctx) => (response) => {
   response.setHeader(
@@ -46,8 +45,6 @@ export class AdminController {
     controller("/auth", AuthController),
   ];
 
-  @dependency
-  emailTokenRepository: EmailTokenRepository;
 
   @dependency
   adminAuthService: AdminAuthService;
@@ -115,6 +112,7 @@ export class AuthController {
     controller("/voter-tags", voterTagController),
     controller("/runnings", RunningController),
     controller("/email-tokens", EmailTokenController),
+    controller("/email-batches", EmailBatchController),
     controller('/ballots', BallotController),
     controller("/admin-users", AdminUserController),
     controller("/profiles", ProfileController)

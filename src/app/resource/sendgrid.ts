@@ -79,6 +79,8 @@ export class SendgridResource {
                 ]
             }
         }).then((response): ISendgridResult => {
+            console.log(response);
+            console.log(response.data);
             if (response.status >= 200 && response.status < 300) {
                 return {
                     success: true,

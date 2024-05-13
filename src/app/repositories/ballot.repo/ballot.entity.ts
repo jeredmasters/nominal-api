@@ -15,14 +15,14 @@ export interface IUnsavedBallot extends IBaseUnsaved {
   label: string;
   response_type: RESPONSE_TYPE;
   short_description?: string;
-  condition?: BallotCondition;
+  condition?: VoterCondition;
 }
 
 export enum CONDITION_TYPE {
   TAG_EQUALS = 'TAG_EQUALS'
 }
-export type BallotCondition = BallotCondition_Tag;
-export interface BallotCondition_Tag {
+export type VoterCondition = VoterCondition_Tag;
+export interface VoterCondition_Tag {
   type: CONDITION_TYPE.TAG_EQUALS,
   key: string;
   value: string;
@@ -52,5 +52,5 @@ export class BallotEntity extends BaseEntity implements IBallot {
   short_description?: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  condition?: BallotCondition;
+  condition?: VoterCondition;
 }

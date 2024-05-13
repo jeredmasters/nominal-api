@@ -38,7 +38,7 @@ export class VoterEntity extends BaseEntity implements IVoter {
   @ForeignKey(VoterDigestEntity, { nullable: true })
   voter_digest_id?: string;
 
-  @Column()
+  @Column({ nullable: true })
   title?: string;
 
   @Column()

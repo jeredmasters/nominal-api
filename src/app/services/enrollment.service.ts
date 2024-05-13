@@ -1,6 +1,6 @@
 import { dependency } from "@foal/core";
 import { IVoter } from "../repositories/voter.repo/voter.entity";
-import { BallotCondition, CONDITION_TYPE, IBallot } from "../repositories/ballot.repo/ballot.entity";
+import { VoterCondition, CONDITION_TYPE, IBallot } from "../repositories/ballot.repo/ballot.entity";
 import { BallotRepository } from "../repositories/ballot.repo";
 import { VoterTagRepository } from "../repositories/voter_tag.repo";
 import { IUnsavedVoterTag } from "../repositories/voter_tag.repo/voter_tag.entity";
@@ -43,7 +43,7 @@ export class EnrollmentService {
     }
 }
 
-const evaluateCondition = (condition: BallotCondition, tags: Array<IUnsavedVoterTag>) => {
+const evaluateCondition = (condition: VoterCondition, tags: Array<IUnsavedVoterTag>) => {
     switch (condition.type) {
         case CONDITION_TYPE.TAG_EQUALS:
             const tag = tags.find(t => t.key === condition.key);
