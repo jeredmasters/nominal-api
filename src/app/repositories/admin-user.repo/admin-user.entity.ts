@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { IBaseUnsaved } from "../base-repo";
+import { BaseEntity2 } from "../base-entity";
 
 export enum ADMIN_ROLE {
   SUPER_ADMIN = "SUPER_ADMIN",
@@ -20,7 +21,7 @@ export interface IUnsavedAdminUser extends IBaseUnsaved {
 }
 
 @Entity("admin_users")
-export class AdminUserEntity extends BaseEntity implements IAdminUser {
+export class AdminUserEntity extends BaseEntity2 implements IAdminUser {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

@@ -1,35 +1,24 @@
 import { Repository } from "typeorm";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { BallotEntity, IBallot, IUnsavedBallot } from "./ballot.entity";
+import { IVoter } from "../voter.repo/voter.entity";
+import { VoterFilterEntity } from "../voter-filter.repo/voter-filter.entity";
+import { BaseRepo } from "../base-repo";
 
-export class BallotRepository {
-  getAll(): Promise<Array<IBallot>> {
-    return BallotEntity.find()
-  }
-  getById(id: string): Promise<IBallot | null> {
-    return BallotEntity.findOneBy({ id })
+export class BallotRepository extends BaseRepo<BallotEntity, IBallot, IUnsavedBallot> {
+  constructor() {
+    super(BallotEntity, 'b');
   }
   getByElectionId(election_id: string): Promise<IBallot[]> {
     return BallotEntity.findBy({ election_id })
   }
-  async getByIdOrThrow(id: string): Promise<IBallot> {
-    const election = await this.getById(id);
-    if (!election) {
-      throw new InternalError({
-        code: "election_id_not_found",
-        func: "getByIdOrThrow",
-        context: id,
-        meta: { id },
-        type: ERROR_TYPE.NOT_FOUND
-      });
-    }
-    return election;
-  }
+  getEligibleBallots(voter: IVoter): Promise<IBallot[]> {
+    const query = BallotEntity.createQueryBuilder('b')
+      .select('b.*')
+      .leftJoin(VoterFilterEntity, 'vf', 'b.voter_filter_id = vf.id')
+      .where('b.election_id = :election_id', { election_id: voter.election_id })
+      .andWhere('(vf.voter_ids IS NULL OR vf.voter_ids ? :voter_id)', { voter_id: voter.id });
 
-  async save(unsaved: IUnsavedBallot): Promise<IBallot> {
-    if (!unsaved.created_at) {
-      unsaved.created_at = new Date;
-    }
-    return BallotEntity.save(unsaved as any);
+    return query.getRawMany()
   }
 }

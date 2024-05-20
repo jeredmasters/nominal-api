@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base-repo";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export interface IAdminToken extends IUnsavedAdminToken {
   id: string;
@@ -18,7 +19,7 @@ export interface IUnsavedAdminToken extends IBaseUnsaved {
 }
 
 @Entity("admin_tokens")
-export class AdminTokenEntity extends BaseEntity implements IAdminToken {
+export class AdminTokenEntity extends BaseEntity2 implements IAdminToken {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

@@ -3,6 +3,7 @@ import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base-repo";
 import { ElectionEntity } from "../election.repo/election.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export enum EMAIL_TOKEN_ACTION {
   LOGIN = "LOGIN",
@@ -31,7 +32,7 @@ export interface IUnsavedEmailToken extends IBaseUnsaved {
 }
 
 @Entity("email_tokens")
-export class EmailTokenEntity extends BaseEntity implements IEmailToken {
+export class EmailTokenEntity extends BaseEntity2 implements IEmailToken {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

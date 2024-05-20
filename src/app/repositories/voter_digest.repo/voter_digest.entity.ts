@@ -4,6 +4,7 @@ import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base-repo";
 import { ElectionEntity } from "../election.repo/election.entity";
 import { FileUploadEntity } from "../file_upload.repo/file_upload.entity";
+import { BaseEntity2 } from "../base-entity";
 
 interface DigestColumn {
   index: number;
@@ -35,7 +36,7 @@ export interface IUnsavedVoterDigest extends IBaseUnsaved {
 }
 
 @Entity("voter_digest")
-export class VoterDigestEntity extends BaseEntity implements IVoterDigest {
+export class VoterDigestEntity extends BaseEntity2 implements IVoterDigest {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

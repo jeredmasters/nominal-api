@@ -3,6 +3,7 @@ import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base-repo";
 import { EmailTokenEntity } from "../email-token.repo/email-token.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export interface IApiToken extends IUnsavedApiToken {
   id: string;
@@ -20,7 +21,7 @@ export interface IUnsavedApiToken extends IBaseUnsaved {
 }
 
 @Entity("api_tokens")
-export class ApiTokenEntity extends BaseEntity implements IApiToken {
+export class ApiTokenEntity extends BaseEntity2 implements IApiToken {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

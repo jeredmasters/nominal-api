@@ -6,10 +6,10 @@ export interface ForeignKeyOptions extends RelationOptions {
     type?: ColumnType;
 }
 
-export function ForeignKey<T = unknown>(entity: ObjectType<T>, options?: ForeignKeyOptions): PropertyDecorator {
+export function ForeignKey<T = unknown>(entity: ObjectType<T> | string, options?: ForeignKeyOptions): PropertyDecorator {
     return function (object, propertyName) {
 
-        const f1 = ManyToOne(() => entity, options);
+        const f1 = typeof entity === "string" ? ManyToOne(entity, options) : ManyToOne(() => entity, options);
         const f2 = JoinColumn({ name: propertyName.toString() });
         const f3 = Column({ type: options?.type, ...options });
 

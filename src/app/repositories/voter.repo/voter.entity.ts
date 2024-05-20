@@ -1,10 +1,10 @@
 
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ForeignKey } from "../../util/foreign-key";
-import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { IBaseUnsaved } from "../base-repo";
 import { ElectionEntity } from "../election.repo/election.entity";
 import { VoterDigestEntity } from "../voter_digest.repo/voter_digest.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export interface IVoter extends IUnsavedVoter {
   id: string;
@@ -22,7 +22,7 @@ export interface IUnsavedVoter extends IBaseUnsaved {
 }
 
 @Entity("voters")
-export class VoterEntity extends BaseEntity implements IVoter {
+export class VoterEntity extends BaseEntity2 implements IVoter {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

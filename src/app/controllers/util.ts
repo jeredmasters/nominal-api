@@ -13,6 +13,8 @@ export const errorToResponse = (err: InternalError | Error | unknown): HttpRespo
                 return new HttpResponseForbidden(err);
             case ERROR_TYPE.NOT_FOUND:
                 return new HttpResponseNotFound(err);
+            case ERROR_TYPE.NOT_AUTHORIZED:
+                return new HttpResponseUnauthorized(err);
             case ERROR_TYPE.UNKOWN:
             default:
                 return new HttpResponseInternalServerError(err)
@@ -293,10 +295,17 @@ export class AdminBaseController<T = ObjectLiteral> {
     async postCreate({ request }: Context) {
         try {
             const { body } = request;
-            const prepared = await this.beforeCreate(body)
-            const item = await this.entity.save(prepared);
-            const modified = await this.afterCreate(prepared, item);
-            return new HttpResponseOK(modified);
+            const prepared = await this.beforeCreate(body);
+            if (Array.isArray(prepared)) {
+                const items = await Promise.all(prepared.map(p => this.entity.save(p)));
+                const modified = await Promise.all(items.map(i => this.afterCreate(prepared, i)));
+                return new HttpResponseOK(modified);
+            }
+            else {
+                const item = await this.entity.save(prepared);
+                const modified = await this.afterCreate(prepared, item);
+                return new HttpResponseOK(modified);
+            }
         }
         catch (err) {
             return errorToResponse(err)

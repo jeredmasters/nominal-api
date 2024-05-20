@@ -3,6 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity, CreateDa
 import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base-repo";
+import { BaseEntity2 } from "../base-entity";
 
 export interface IVoterTag extends IUnsavedVoterTag {
   id: string;
@@ -16,7 +17,7 @@ export interface IUnsavedVoterTag extends IBaseUnsaved {
 }
 
 @Entity("voter_tags")
-export class VoterTagEntity extends BaseEntity implements IVoterTag {
+export class VoterTagEntity extends BaseEntity2 implements IVoterTag {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

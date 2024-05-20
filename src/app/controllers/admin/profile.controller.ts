@@ -6,6 +6,9 @@ import { Context, HttpResponseOK, Post, dependency } from "@foal/core";
 import { RunningRepository } from "../../repositories/running.repo";
 import { ProfileRepository } from "../../repositories/profile.repo";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
+import { CandidateEntity } from "../../repositories/candidate.repo/candidate.entity";
+import { CandidateRepository } from "../../repositories/candidate.repo";
+import { ProfileService } from "../../services/profile.service";
 
 
 
@@ -15,6 +18,12 @@ export class ProfileController extends AdminBaseController {
 
   @dependency
   profileRepo: ProfileRepository;
+
+  @dependency
+  profileService: ProfileService;
+
+  @dependency
+  candidateRepo: CandidateRepository;
 
   constructor() {
     super(ProfileEntity, "p")
@@ -66,7 +75,7 @@ export class ProfileController extends AdminBaseController {
   async postApprove({ request }: Context) {
     try {
       const { id } = request.params;
-      const result = await this.profileRepo.approve(id);
+      const result = await this.profileService.approve(id);
       return new HttpResponseOK(result);
     }
     catch (err) {
@@ -86,7 +95,7 @@ export class ProfileController extends AdminBaseController {
           type: ERROR_TYPE.BAD_INPUT
         });
       }
-      const result = await this.profileRepo.reject(id, reject_reason);
+      const result = await this.profileService.reject(id, reject_reason);
       return new HttpResponseOK(result);
     }
     catch (err) {

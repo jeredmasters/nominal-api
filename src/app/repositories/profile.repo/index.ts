@@ -12,12 +12,7 @@ export class ProfileRepository extends BaseRepo<ProfileEntity, IProfile, IUnsave
     return ProfileEntity.findBy({ candidate_id, running_id })
   }
 
-
-  approve(id: string) {
-    return ProfileEntity.update(id, { status: PROFILE_STATUS.APPROVED });
-  }
-
-  reject(id: string, rejected_reason: string) {
-    return ProfileEntity.update(id, { status: PROFILE_STATUS.REJECTED, rejected_reason });
+  setStatus(id: string, status: PROFILE_STATUS, rejected_reason?: string) {
+    return ProfileEntity.update(id, { status, rejected_reason });
   }
 }

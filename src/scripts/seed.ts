@@ -1,4 +1,4 @@
-import { ServiceManager } from "@foal/core";
+import { ServiceManager, dependency } from "@foal/core";
 import { dataSource } from "../db";
 import { DataSource } from "typeorm";
 import { OrganisationRepository } from "../app/repositories/organisation.repo";
@@ -8,7 +8,7 @@ import { VoterRepository } from "../app/repositories/voter.repo";
 import { AdminUserRepository } from "../app/repositories/admin-user.repo";
 import { AdminPasscodeRepository } from "../app/repositories/admin-passcode.repo";
 import { PASSCODE_TYPE } from "../app/repositories/admin-passcode.repo/admin-passcode.entity";
-import { randBool, randInt, randPick } from "../app/util/rand";
+import { randBool, randEnum, randInt, randPick } from "../app/util/rand";
 import { ONE_DAY } from "../app/const/date";
 import { RunningRepository } from "../app/repositories/running.repo";
 import { ElectionRepository } from "../app/repositories/election.repo";
@@ -32,6 +32,16 @@ const election_types = [
     { label: "Referendum", type: RESPONSE_TYPE.RANKING },
     { label: "Plebiscite", type: RESPONSE_TYPE.YES_NO },
     { label: "Poll", type: RESPONSE_TYPE.YES_NO }
+]
+
+const ballot_types = [
+    { label: "Federal", type: RESPONSE_TYPE.PREFERENCE },
+    { label: "Referndum", type: RESPONSE_TYPE.YES_NO },
+    { label: "Poll", type: RESPONSE_TYPE.YES_NO },
+    { label: "Poll", type: RESPONSE_TYPE.PREFERENCE },
+    { label: "Local", type: RESPONSE_TYPE.PREFERENCE },
+    { label: "Camps", type: RESPONSE_TYPE.PREFERENCE },
+    { label: "General", type: RESPONSE_TYPE.PREFERENCE }
 ]
 
 const randFirstName = () => {
@@ -59,19 +69,12 @@ const randElection = () => {
     return randPick(election_types)
 }
 
-const randElectionSatus = () => {
-    return randPick([
-        ELECTION_STATUS.CANCELLED,
-        ELECTION_STATUS.COMPLETE,
-        ELECTION_STATUS.DRAFT,
-        ELECTION_STATUS.RUNNING,
-        ELECTION_STATUS.NOMINATIONS,
-
-    ])
+const randBallot = () => {
+    return randPick(ballot_types)
 }
 
-const promiseAll = <T = any>(count: number, func: () => Promise<T>): Promise<Array<T>> => {
-    return Promise.all(Array(count).fill(0).map(func));
+const promiseAll = <T = any>(count: number, func: (index: number) => Promise<T>): Promise<Array<T>> => {
+    return Promise.all(Array(count).fill(0).map((_, i) => func(i)));
 }
 
 export async function main() {
@@ -80,11 +83,8 @@ export async function main() {
     serviceManager.set(DataSource, dataSource)
 
     const organisationRepo = serviceManager.get(OrganisationRepository);
-    const electionRepository = serviceManager.get(ElectionRepository);
-    const ballotRepo = serviceManager.get(BallotRepository);
-    const runningRepo = serviceManager.get(RunningRepository);
-    const candidateRepo = serviceManager.get(CandidateRepository);
-    const voterRepo = serviceManager.get(VoterRepository);
+    const electionSeeder = serviceManager.get(ElectionSeeder);
+
     const adminUserRepo = serviceManager.get(AdminUserRepository);
     const adminPasscodeRepo = serviceManager.get(AdminPasscodeRepository);
 
@@ -110,62 +110,163 @@ export async function main() {
 
         const org = await organisationRepo.save({
             label: randCompany(),
+            owner: 'PRIVATE',
+            country: 'AU'
         })
         console.log("Org created")
 
         console.log(org)
 
 
-        const electionBallots = await promiseAll(randInt(5, 30), async () => {
+        await promiseAll(randInt(5, 30), async () =>
 
-            const etemplate = randElection();
+            electionSeeder.seedElection(org.id)
+        );
+    }
 
-            const status = randElectionSatus();
-            const start = now + (status === ELECTION_STATUS.COMPLETE ? randInt(-300, -50) : randInt(-5, 200)) * ONE_DAY;
+    console.log('destroy')
+
+    dataSource.destroy();
+}
+
+interface Times {
+    nominations_close_at?: Date;
+    nominations_open_at?: Date;
+    voting_close_at: Date;
+    voting_open_at: Date;
+}
+const getTimes = (status: ELECTION_STATUS): Times => {
+    const now = Date.now();
+    let nominations_open_at: number | undefined;
+    let nominations_close_at: number | undefined;
+    let voting_close_at: number = 0;
+    let voting_open_at: number = 0;
+
+    switch (status) {
+        case ELECTION_STATUS.CANCELLED:
+            nominations_open_at = now + randInt(100, 100) * ONE_DAY
+            nominations_close_at = nominations_open_at + randInt(10, 30) * ONE_DAY;
+            voting_open_at = nominations_close_at + randInt(10, 30) * ONE_DAY;
+            voting_close_at = voting_close_at + randInt(10, 30) * ONE_DAY;
+            break;
+        case ELECTION_STATUS.DRAFT:
+        case ELECTION_STATUS.READY:
+            nominations_open_at = now + randInt(10, 30) * ONE_DAY
+            nominations_close_at = nominations_open_at + randInt(10, 30) * ONE_DAY;
+            voting_open_at = nominations_close_at + randInt(10, 30) * ONE_DAY;
+            voting_close_at = voting_close_at + randInt(10, 30) * ONE_DAY;
+            break;
+        case ELECTION_STATUS.NOMINATIONS:
+            nominations_open_at = now + randInt(-20, -5) * ONE_DAY
+            nominations_close_at = now + randInt(5, 20) * ONE_DAY;
+            voting_open_at = nominations_close_at + randInt(10, 30) * ONE_DAY;
+            voting_close_at = voting_close_at + randInt(10, 30) * ONE_DAY;
+            break;
+        case ELECTION_STATUS.RUNNING:
+            voting_open_at = now + randInt(-20, -5) * ONE_DAY;
+            voting_close_at = now + randInt(5, 20) * ONE_DAY;
+            nominations_close_at = voting_open_at + randInt(-30, -10) * ONE_DAY;
+            nominations_open_at = nominations_close_at + randInt(-30, -10) * ONE_DAY;
+            break;
+        case ELECTION_STATUS.COMPLETE:
+            voting_close_at = now + randInt(-20 - 5) * ONE_DAY;
+            voting_open_at = voting_close_at + randInt(-30, -10) * ONE_DAY;
+            nominations_close_at = voting_open_at + randInt(-30, -10) * ONE_DAY;
+            nominations_open_at = nominations_close_at + randInt(-30, -10) * ONE_DAY;
+            break;
+    }
+
+    return {
+        nominations_open_at: nominations_open_at ? new Date(nominations_open_at) : undefined,
+        nominations_close_at: nominations_close_at ? new Date(nominations_close_at) : undefined,
+        voting_open_at: new Date(voting_open_at),
+        voting_close_at: new Date(voting_close_at)
+    }
+}
+
+export class ElectionSeeder {
+    @dependency
+    electionRepository: ElectionRepository;
+
+    @dependency
+    voterRepo: VoterRepository;
+
+    @dependency
+    candidateRepo: CandidateRepository;
+
+    @dependency
+    ballotRepo: BallotRepository;
+
+    @dependency
+    runningRepo: RunningRepository;
 
 
-            const election = await electionRepository.save({
-                status: ELECTION_STATUS.DRAFT,
-                label: etemplate.label,
-                organisation_id: org.id,
-                opens_at: new Date(start),
-                closes_at: new Date(start + randInt(10, 30) * ONE_DAY),
-                mode: ELECTION_MODE.SCHEDULE
-            })
+    seedElection = async (organisation_id: string) => {
+        const label = "";
 
-            const voters = await promiseAll(randInt(10, 1000), () => voterRepo.save({
-                first_name: randFirstName(),
-                last_name: randLastName(),
-                email: "person@example.com",
-                election_id: election.id
-            }))
+        const status = randEnum(ELECTION_STATUS) as ELECTION_STATUS;
 
-            const candidates = await promiseAll(randInt(5, 30), () => candidateRepo.save({
-                election_id: election.id,
+        const times = getTimes(status);
+        const election = await this.electionRepository.save({
+            status: status,
+            label: label,
+            organisation_id: organisation_id,
+            ...times,
+            mode: ELECTION_MODE.SCHEDULE
+        })
+
+        const voters = await promiseAll(randInt(10, 1000), () => this.voterRepo.save({
+            first_name: randFirstName(),
+            last_name: randLastName(),
+            email: "person@example.com",
+            election_id: election.id
+        }))
+        const ballots = await promiseAll(randInt(1, 3), (i) => this.seedBallots(election.id, i));
+        return election;
+    }
+
+    seedBallots = async (election_id: string, index: number) => {
+
+        const eballot = randBallot();
+
+        const ballot = await this.ballotRepo.save({
+            election_id: election_id,
+            label: eballot.label,
+            response_type: eballot.type,
+            shuffle_candidates: Math.random() < 0.7,
+            display_order: randInt(0, 10)
+        });
+
+        if (ballot.response_type === RESPONSE_TYPE.YES_NO) {
+            return;
+        }
+
+        console.log('fetch candidates')
+
+        const candidates = await this.candidateRepo.getByElectionId(election_id);
+
+
+        if (randBool() || candidates.length === 0) {
+            // 50/50 chance to create new candidates or reuse from existing
+            // always create on the first ballot
+            await promiseAll(randInt(5, 30), () => this.candidateRepo.save({
+                election_id: election_id,
                 first_name: randFirstName(),
                 last_name: randLastName(),
                 email: randFirstName() + '@example.com',
                 status: randPick([CANDIDATE_STATUS.APPROVED, CANDIDATE_STATUS.NOMINATED, CANDIDATE_STATUS.REJECTED])
-            }))
+            }).then(c => this.runningRepo.getOrCreateRunning(c.id, ballot.id)));
+        }
+        else {
 
-            const ballots = await promiseAll(randInt(1, 3), async () => {
-                const eballot = randElection();
+            for (let i = 0; i < 10; i++) {
+                const candidate = randPick(candidates);
+                await this.runningRepo.getOrCreateRunning(candidate.id, ballot.id);
+            }
+        }
 
-                const ballot = await ballotRepo.save({
-                    election_id: election.id,
-                    label: eballot.label,
-                    response_type: eballot.type
-                })
+        return ballot;
 
-                for (let i = 0; i < 10; i++) {
-                    const candidate = randPick(candidates);
-                    await runningRepo.getOrCreateRunning(candidate.id, ballot.id);
-                }
-
-                return ballot;
-            });
-        });
     }
-
-    dataSource.destroy();
 }
+

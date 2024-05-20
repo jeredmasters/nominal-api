@@ -9,6 +9,7 @@ import { uuidv4 } from "../util/rand";
 import { AdminLogRepository } from "../repositories/admin_log.repo";
 import { ADMIN_EVENT } from "../repositories/admin_log.repo/admin-log.entity";
 import * as jwt from 'jwt-simple';
+import { comparePassword } from "../util/crypto";
 
 export class AdminAuthService {
     @dependency
@@ -45,7 +46,9 @@ export class AdminAuthService {
                 context: email
             })
         }
-        if (passwordEntity.value !== password) {
+        const compare = await comparePassword(password, passwordEntity.value);
+        console.log({ compare })
+        if (compare !== true) {
             console.log(password, passwordEntity)
             throw new InternalError({
                 code: 'admin_password_failed',
@@ -98,7 +101,7 @@ export class AdminAuthService {
                 code: 'admin_token_not_found',
                 func: "AuthService.validate",
                 context: authorizarion,
-                type: ERROR_TYPE.NOT_FOUND
+                type: ERROR_TYPE.NOT_AUTHORIZED
             })
         }
         return await this.adminUserRepository.getByIdOrThrow(adminToken.admin_user_id);

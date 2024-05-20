@@ -3,6 +3,7 @@ import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base-repo";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export enum EMAIL_TOKEN_ACTION {
   LOGIN = "LOGIN",
@@ -30,7 +31,7 @@ export interface IUnsavedAdminPermission extends IBaseUnsaved {
 }
 
 @Entity("admin_permissions")
-export class AdminPermissionEntity extends BaseEntity implements IAdminPermission {
+export class AdminPermissionEntity extends BaseEntity2 implements IAdminPermission {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

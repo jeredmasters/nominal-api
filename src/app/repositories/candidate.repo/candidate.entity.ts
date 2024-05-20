@@ -3,7 +3,6 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base-repo";
 import { ElectionEntity } from "../election.repo/election.entity";
-import { ProfileEntity } from "../profile.repo/profile.entity";
 
 export interface ICandidate extends IUnsavedCandidate {
   id: string;
@@ -41,6 +40,9 @@ export class CandidateEntity extends BaseEntity implements ICandidate {
 
   @ForeignKey(ElectionEntity)
   election_id: string;
+
+  @ForeignKey("profiles", { nullable: true })
+  profile_id?: string;
 
   @Column({ nullable: true })
   title?: string;

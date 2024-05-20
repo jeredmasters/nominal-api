@@ -5,6 +5,8 @@ import { dependency } from "@foal/core";
 import { RunningRepository } from "../../repositories/running.repo";
 import { BallotEntity } from "../../repositories/ballot.repo/ballot.entity";
 import { ElectionEntity } from "../../repositories/election.repo/election.entity";
+import { IUnsavedVoterFilter } from "../../repositories/voter-filter.repo/voter-filter.entity";
+import { VoterFilterService } from "../../services/voter-filter.service";
 
 
 export class BallotController extends AdminBaseController {
@@ -15,6 +17,8 @@ export class BallotController extends AdminBaseController {
   @dependency
   runningRepository: RunningRepository;
 
+  @dependency
+  voterFilterService: VoterFilterService;
 
   applyFilter(queryBuilder: SelectQueryBuilder<ObjectLiteral>, field: string, value: any) {
     switch (field) {
@@ -33,11 +37,41 @@ export class BallotController extends AdminBaseController {
     return false
   }
 
+  async beforeCreate(raw: any): Promise<any> {
+    delete raw.running_count;
+    if (raw.voter_filter) {
+      const unsaved: IUnsavedVoterFilter = {
+        election_id: raw.election_id,
+        where: raw.where,
+        voter_count: 0
+      }
+      const voterFilter = await this.voterFilterService.saveWithMetadata(unsaved);
+      delete raw.voter_filter;
+      raw.voter_filter_id = voterFilter.id;
+    }
+    return raw;
+  }
+
   async afterCreate(raw: any, election: ObjectLiteral): Promise<ObjectLiteral> {
     if (raw.candidate_id) {
       await this.runningRepository.getOrCreateRunning(raw.candidate_id, election.id);
     }
     return election;
+  }
+
+  async beforeUpdate(raw: any): Promise<any> {
+    delete raw.running_count;
+    if (raw.voter_filter) {
+      const unsaved: IUnsavedVoterFilter = {
+        election_id: raw.election_id,
+        where: raw.where,
+        voter_count: 0
+      }
+      const voterFilter = await this.voterFilterService.saveWithMetadata(unsaved);
+      delete raw.voter_filter;
+      raw.voter_filter_id = voterFilter.id;
+    }
+    return raw;
   }
 
   async beforeQuery(queryBuilder: SelectQueryBuilder<ObjectLiteral>) {

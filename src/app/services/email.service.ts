@@ -41,7 +41,7 @@ export class EmailService {
             last_name: voter.last_name,
             vote_name: election.label,
             token_url: env.consumerFeUrl() + "/email-token#" + emailToken.id,
-            closes_at: election.closes_at.toDateString()
+            closes_at: election.voting_close_at.toDateString()
         }
 
         return this.sendgridResource.sendInvite(invite);

@@ -4,6 +4,7 @@ import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base-repo";
 import { RunningEntity } from "../running.repo/running.entity";
 import { CandidateEntity } from "../candidate.repo/candidate.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export interface IProfile extends IUnsavedProfile {
   id: string;
@@ -34,7 +35,7 @@ export interface IUnsavedProfile extends IBaseUnsaved {
 }
 
 @Entity("profiles")
-export class ProfileEntity extends BaseEntity implements IProfile {
+export class ProfileEntity extends BaseEntity2 implements IProfile {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

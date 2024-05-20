@@ -3,6 +3,9 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { ForeignKey } from "../../util/foreign-key";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { IBaseUnsaved } from "../base-repo";
+import { BallotEntity } from "../ballot.repo/ballot.entity";
+import { VoterEntity } from "../voter.repo/voter.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export interface IResponse extends IUnsavedResponse {
   id: string;
@@ -11,12 +14,12 @@ export interface IResponse extends IUnsavedResponse {
 
 export interface IUnsavedResponse extends IBaseUnsaved {
   voter_id: string;
-  election_id: string;
-  response: any
+  ballot_id: string;
+  value: any
 }
 
 @Entity("responses")
-export class ResponseEntity extends BaseEntity implements IResponse {
+export class ResponseEntity extends BaseEntity2 implements IResponse {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -26,12 +29,12 @@ export class ResponseEntity extends BaseEntity implements IResponse {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ForeignKey(OrganisationEntity)
+  @ForeignKey(VoterEntity)
   voter_id: string;
 
-  @ForeignKey(OrganisationEntity)
-  election_id: string;
+  @ForeignKey(BallotEntity)
+  ballot_id: string;
 
   @Column({ select: false, type: "jsonb" })
-  response: string;
+  value: string;
 }

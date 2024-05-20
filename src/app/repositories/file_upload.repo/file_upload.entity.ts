@@ -6,6 +6,7 @@ import { VoterEntity } from "../voter.repo/voter.entity";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { ElectionEntity } from "../election.repo/election.entity";
 import { CandidateEntity } from "../candidate.repo/candidate.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export interface IFileUpload extends IUnsavedFileUpload {
   id: string;
@@ -25,7 +26,7 @@ export interface IUnsavedFileUpload extends IBaseUnsaved {
 }
 
 @Entity("file_uploads")
-export class FileUploadEntity extends BaseEntity implements IFileUpload {
+export class FileUploadEntity extends BaseEntity2 implements IFileUpload {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

@@ -19,19 +19,13 @@ export class ElectionController {
   private readonly ballotRepo: BallotRepository;
 
   @dependency
-  private readonly authService: AuthService;
-
-  @dependency
-  private readonly runningRepository: RunningRepository;
-
-  @dependency
   private readonly enrollmentService: EnrollmentService;
 
   @Get("")
   async getRules({ request, user }: Context<IVoter>) {
     try {
       return new HttpResponseOK(
-        await this.electionRepository.getById(user.election_id)
+        [await this.electionRepository.getById(user.election_id)]
       );
     } catch (err) {
       return errorToResponse(err)

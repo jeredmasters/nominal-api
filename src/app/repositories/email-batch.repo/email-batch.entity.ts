@@ -2,14 +2,15 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base-repo";
 import { ElectionEntity } from "../election.repo/election.entity";
-import { VoterCondition } from "../ballot.repo/ballot.entity";
+import { VoterFilterEntity } from "../voter-filter.repo/voter-filter.entity";
+import { BaseEntity2 } from "../base-entity";
 
 
 export enum EMAIL_BATCH_STATUS {
-  DISABLED = 'DISABLED',
+  DRAFT = 'DRAFT',
   ENABLED = 'ENABLED',
-  SENT = 'SENT',
-  SENDING = 'SENDING'
+  SENDING = 'SENDING',
+  SENT = 'SENT'
 }
 
 export enum EMAIL_SCHEDULE {
@@ -23,14 +24,13 @@ export interface IEmailBatch extends IUnsavedEmailBatch {
 }
 
 export interface IUnsavedEmailBatch extends IBaseUnsaved {
-  voter_ids: Array<string>;
   election_id: string;
   send_at?: Date;
   status: EMAIL_BATCH_STATUS;
 }
 
 @Entity("email_batches")
-export class EmailBatchEntity extends BaseEntity implements IEmailBatch {
+export class EmailBatchEntity extends BaseEntity2 implements IEmailBatch {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -40,11 +40,11 @@ export class EmailBatchEntity extends BaseEntity implements IEmailBatch {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @Column({ type: 'jsonb', nullable: true })
-  voter_ids: Array<string>;
-
   @ForeignKey(ElectionEntity, { nullable: true })
   election_id: string;
+
+  @ForeignKey(VoterFilterEntity, { nullable: true })
+  voter_filter_id?: string;
 
   @Column({ nullable: true })
   send_at?: Date;
@@ -55,6 +55,6 @@ export class EmailBatchEntity extends BaseEntity implements IEmailBatch {
   @Column()
   schedule: EMAIL_SCHEDULE;
 
-  @Column({ type: 'jsonb', nullable: true })
-  condition?: VoterCondition;
+  @Column()
+  schedule_status: EMAIL_SCHEDULE;
 }

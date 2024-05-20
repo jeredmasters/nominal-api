@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { IBaseUnsaved } from "../base-repo";
 import { ForeignKey } from "../../util/foreign-key";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export enum PASSCODE_TYPE {
   MFA = "MFA",
@@ -20,7 +21,7 @@ export interface IUnsavedAdminPasscode extends IBaseUnsaved {
 }
 
 @Entity("admin_passcode")
-export class AdminPasscode extends BaseEntity implements IAdminPasscode {
+export class AdminPasscodeEntity extends BaseEntity2 implements IAdminPasscode {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

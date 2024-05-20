@@ -3,7 +3,7 @@ import { ForeignKey } from "../../util/foreign-key";
 import { CandidateEntity } from "../candidate.repo/candidate.entity";
 import { BallotEntity } from "../ballot.repo/ballot.entity";
 import { IBaseUnsaved } from "../base-repo";
-import { ProfileEntity } from "../profile.repo/profile.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export interface IRunning extends IUnsavedRunning {
   id: string;
@@ -18,7 +18,7 @@ export interface IUnsavedRunning extends IBaseUnsaved {
 
 @Entity("runnings")
 @Unique(["candidate_id", "ballot_id"])
-export class RunningEntity extends BaseEntity implements IRunning {
+export class RunningEntity extends BaseEntity2 implements IRunning {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -34,6 +34,9 @@ export class RunningEntity extends BaseEntity implements IRunning {
   @ForeignKey(BallotEntity)
   ballot_id: string
 
-  @Column({ nullable: true })
-  profile_id?: string
+  @ForeignKey("profiles", { nullable: true })
+  profile_id?: string;
+
+  @Column("int", { nullable: true })
+  display_order?: number;
 }

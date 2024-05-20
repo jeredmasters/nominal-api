@@ -10,6 +10,7 @@ import { ApiTokenEntity } from "../api-token.repo/api-token.entity";
 import { ResponseEntity } from "../response.repo/reponse.entity";
 import { AdminUserEntity } from "../admin-user.repo/admin-user.entity";
 import { AdminPermissionEntity } from "../admin-permissions.repo/admin-permission.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export enum ADMIN_EVENT {
   DEBUG = "DEBUG",
@@ -38,7 +39,7 @@ export interface IUnsavedAdminLog extends IBaseUnsaved {
 }
 
 @Entity("admin_log")
-export class AdminLogEntity extends BaseEntity implements IAdminLog {
+export class AdminLogEntity extends BaseEntity2 implements IAdminLog {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

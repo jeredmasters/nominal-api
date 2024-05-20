@@ -8,6 +8,7 @@ import { CandidateEntity } from "../candidate.repo/candidate.entity";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { ApiTokenEntity } from "../api-token.repo/api-token.entity";
 import { ResponseEntity } from "../response.repo/reponse.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export enum EVENT_PRIMARY {
   DEBUG = "DEBUG",
@@ -36,7 +37,7 @@ export interface IUnsavedEventLog extends IBaseUnsaved {
 }
 
 @Entity("event_log")
-export class EventLogEntity extends BaseEntity implements IEventLog {
+export class EventLogEntity extends BaseEntity2 implements IEventLog {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

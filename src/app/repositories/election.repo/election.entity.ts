@@ -2,9 +2,11 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { ForeignKey } from "../../util/foreign-key";
 import { OrganisationEntity } from "../organisation.repo/organisation.entity";
 import { IBaseUnsaved } from "../base-repo";
+import { BaseEntity2 } from "../base-entity";
 
 export enum ELECTION_STATUS {
   DRAFT = "DRAFT",
+  READY = "READY",
   NOMINATIONS = "NOMINATIONS",
   RUNNING = "RUNNING",
   COMPLETE = "COMPLETE",
@@ -25,15 +27,17 @@ export interface IElection extends IUnsavedElection {
 export interface IUnsavedElection extends IBaseUnsaved {
   organisation_id: string;
   label: string;
-  opens_at: Date;
-  closes_at: Date;
   status: ELECTION_STATUS;
   short_description?: string;
   mode: ELECTION_MODE;
+  nominations_close_at?: Date;
+  nominations_open_at?: Date;
+  voting_close_at: Date;
+  voting_open_at: Date;
 }
 
 @Entity("elections")
-export class ElectionEntity extends BaseEntity implements IElection {
+export class ElectionEntity extends BaseEntity2 implements IElection {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -58,10 +62,16 @@ export class ElectionEntity extends BaseEntity implements IElection {
   @Column()
   mode: ELECTION_MODE;
 
-  @Column()
-  closes_at: Date;
+  @Column({ nullable: true })
+  nominations_close_at?: Date;
+
+  @Column({ nullable: true })
+  nominations_open_at?: Date;
 
   @Column()
-  opens_at: Date;
+  voting_close_at: Date;
+
+  @Column()
+  voting_open_at: Date;
 
 }

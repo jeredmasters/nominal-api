@@ -1,36 +1,21 @@
 import { ERROR_TYPE, InternalError } from "../../domain/error";
-import { AdminPasscode, IAdminPasscode, IUnsavedAdminPasscode, PASSCODE_TYPE } from "./admin-passcode.entity";
+import { hashPassword } from "../../util/crypto";
+import { AdminLogEntity } from "../admin_log.repo/admin-log.entity";
+import { BaseRepo } from "../base-repo";
+import { AdminPasscodeEntity, IAdminPasscode, IUnsavedAdminPasscode, PASSCODE_TYPE } from "./admin-passcode.entity";
 
-export class AdminPasscodeRepository {
-  getAll(): Promise<Array<IAdminPasscode>> {
-    return AdminPasscode.find()
+export class AdminPasscodeRepository extends BaseRepo<AdminPasscodeEntity, IAdminPasscode, IUnsavedAdminPasscode> {
+  constructor() {
+    super(AdminPasscodeEntity, 'ap');
   }
-  getById(id: string): Promise<IAdminPasscode | null> {
-    return AdminPasscode.findOneBy({ id })
-  }
-  async getByIdOrThrow(id: string): Promise<IAdminPasscode> {
-    const account = await this.getById(id);
-    if (!account) {
-      throw new InternalError({
-        code: "account_id_not_found",
-        func: "getByIdOrThrow",
-        context: id,
-        meta: { id },
-        type: ERROR_TYPE.NOT_FOUND
-      });
-    }
-    return account;
-  }
-
   async save(unsaved: IUnsavedAdminPasscode): Promise<IAdminPasscode> {
-    if (!unsaved.created_at) {
-      unsaved.created_at = new Date;
+    if (unsaved.type === PASSCODE_TYPE.PASSWORD) {
+      unsaved.value = await hashPassword(unsaved.value);
     }
-    return AdminPasscode.save(unsaved as any);
+    return super.save(unsaved);
   }
-
   getPasscodeForUser(admin_user_id: string, type: PASSCODE_TYPE) {
-    return AdminPasscode
+    return AdminPasscodeEntity
       .createQueryBuilder()
       .where({ admin_user_id, type })
       .orderBy('created_at', 'DESC')
