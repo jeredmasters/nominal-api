@@ -91,7 +91,7 @@ export class ConsumerAuthService {
                 code: 'token_missing_public_key',
                 func: "AuthService.validate",
                 context: authorizarion,
-                type: ERROR_TYPE.NOT_FOUND,
+                type: ERROR_TYPE.NOT_AUTHORIZED,
                 meta: decoded
             })
         }
@@ -101,7 +101,7 @@ export class ConsumerAuthService {
                 code: 'token_not_found',
                 func: "AuthService.validate",
                 context: authorizarion,
-                type: ERROR_TYPE.NOT_FOUND
+                type: ERROR_TYPE.NOT_AUTHORIZED
             })
         }
         return await this.voterRepo.getByIdOrThrow(token.voter_id);

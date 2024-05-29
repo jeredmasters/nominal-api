@@ -4,7 +4,7 @@ import { IVoterDigest } from "../repositories/voter_digest.repo/voter_digest.ent
 import { Disk } from "@foal/storage";
 import { FileUploadRepository } from "../repositories/file_upload.repo";
 import { parse } from "papaparse";
-import { IUnsavedVoter, IVoter } from "../repositories/voter.repo/voter.entity";
+import { IUnsavedVoter, IVoter, VOTER_STATUS } from "../repositories/voter.repo/voter.entity";
 import { ERROR_TYPE, InternalError } from "../domain/error";
 import { VoterRepository } from "../repositories/voter.repo";
 import { VoterTagRepository } from "../repositories/voter_tag.repo";
@@ -103,6 +103,7 @@ export class VoterDigestService {
                 last_name: row[lastName.index],
                 email: row[email.index],
                 preferred_name: preferredName ? row[preferredName.index] : undefined,
+                status: VOTER_STATUS.INACTIVE
             }
             if (!unsaved.first_name || unsaved.first_name === "") {
                 return { success: false, message: "first_name_missing", voter: unsaved };

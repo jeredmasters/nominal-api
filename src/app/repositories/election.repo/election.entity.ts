@@ -34,6 +34,7 @@ export interface IUnsavedElection extends IBaseUnsaved {
   nominations_open_at?: Date;
   voting_close_at: Date;
   voting_open_at: Date;
+  allow_update_vote: boolean;
 }
 
 @Entity("elections")
@@ -73,5 +74,8 @@ export class ElectionEntity extends BaseEntity2 implements IElection {
 
   @Column()
   voting_open_at: Date;
+
+  @Column()
+  allow_update_vote: boolean;
 
 }

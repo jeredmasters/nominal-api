@@ -23,6 +23,8 @@ export interface IUnsavedBallot extends IBaseUnsaved {
   exclusive_priority?: number;
   silo_by_tag?: string;
   display_order?: number;
+  min_ranking?: number;
+  max_ranking?: number;
 }
 
 

@@ -16,6 +16,11 @@ import { BallotRepository } from "../app/repositories/ballot.repo";
 import { ADMIN_ROLE } from "../app/repositories/admin-user.repo/admin-user.entity";
 import { CANDIDATE_STATUS } from "../app/repositories/candidate.repo/candidate.entity";
 import { ELECTION_MODE, ELECTION_STATUS } from "../app/repositories/election.repo/election.entity";
+import { IBaseTag } from "../app/domain/voter";
+import { VoterTagRepository } from "../app/repositories/voter_tag.repo";
+import { IOrganisation, ORGANISATION_OWNER } from "../app/repositories/organisation.repo/organisation.entity";
+import { VOTER_STATUS } from "../app/repositories/voter.repo/voter.entity";
+
 
 const surnames_list = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Garcia', 'Rodriguez', 'Wilson', 'Martinez', 'Anderson', 'Taylor', 'Thomas', 'Hernandez', 'Moore', 'Martin', 'Jackson', 'Thompson', 'White', 'Lopez', 'Lee', 'Gonzalez', 'Harris', 'Clark', 'Lewis', 'Robinson', 'Walker', 'Perez', 'Hall', 'Young', 'Allen', 'Sanchez', 'Wright', 'King', 'Scott', 'Green', 'Baker', 'Adams', 'Nelson', 'Hill', 'Ramirez', 'Campbell', 'Mitchell', 'Roberts', 'Carter', 'Phillips', 'Evans', 'Turner', 'Torres', 'Parker', 'Collins', 'Edwards', 'Stewart', 'Flores', 'Morris', 'Nguyen', 'Murphy', 'Rivera', 'Cook', 'Rogers', 'Morgan', 'Peterson', 'Cooper', 'Reed', 'Bailey', 'Bell', 'Gomez', 'Kelly', 'Howard', 'Ward', 'Cox', 'Diaz', 'Richardson', 'Wood', 'Watson', 'Brooks', 'Bennett', 'Gray', 'James', 'Reyes', 'Cruz', 'Hughes', 'Price', 'Myers', 'Long', 'Foster', 'Sanders', 'Ross', 'Morales', 'Powell', 'Sullivan', 'Russell', 'Ortiz', 'Jenkins', 'Gutierrez', 'Perry', 'Butler', 'Barnes', 'Fisher', 'Henderson', 'Coleman', 'Simmons', 'Patterson', 'Jordan', 'Reynolds', 'Hamilton', 'Graham', 'Kim', 'Gonzales', 'Alexander', 'Ramos', 'Wallace', 'Griffin', 'West', 'Cole', 'Hayes', 'Chavez', 'Gibson', 'Bryant', 'Ellis', 'Stevens', 'Murray', 'Ford', 'Marshall', 'Owens', 'Mcdonald', 'Harrison', 'Ruiz', 'Kennedy', 'Wells', 'Alvarez', 'Woods', 'Mendoza', 'Castillo', 'Olson', 'Webb', 'Washington', 'Tucker', 'Freeman', 'Burns', 'Henry', 'Vasquez', 'Snyder', 'Simpson', 'Crawford', 'Jimenez', 'Porter', 'Mason', 'Shaw', 'Gordon', 'Wagner', 'Hunter', 'Romero', 'Hicks', 'Dixon', 'Hunt', 'Palmer', 'Robertson', 'Black', 'Holmes', 'Stone', 'Meyer', 'Boyd', 'Mills', 'Warren', 'Fox', 'Rose', 'Rice', 'Moreno', 'Schmidt', 'Patel', 'Ferguson', 'Nichols', 'Herrera', 'Medina', 'Ryan', 'Fernandez', 'Weaver', 'Daniels', 'Stephens', 'Gardner', 'Payne', 'Kelley', 'Dunn', 'Pierce', 'Arnold', 'Tran', 'Spencer', 'Peters', 'Hawkins', 'Grant', 'Hansen', 'Castro', 'Hoffman', 'Hart', 'Elliott', 'Cunningham', 'Knight', 'Bradley', 'Carroll', 'Hudson', 'Duncan', 'Armstrong', 'Berry', 'Andrews', 'Johnston', 'Ray', 'Lane', 'Riley', 'Carpenter', 'Perkins', 'Aguilar', 'Silva', 'Richards', 'Willis', 'Matthews', 'Chapman', 'Lawrence', 'Garza', 'Vargas', 'Watkins', 'Wheeler', 'Larson', 'Carlson', 'Harper', 'George', 'Greene', 'Burke', 'Guzman', 'Morrison', 'Munoz', 'Jacobs', 'Obrien', 'Lawson', 'Franklin', 'Lynch', 'Bishop', 'Carr', 'Salazar', 'Austin', 'Mendez', 'Gilbert', 'Jensen', 'Williamson', 'Montgomery', 'Harvey', 'Oliver', 'Howell', 'Dean', 'Hanson', 'Weber', 'Garrett', 'Sims', 'Burton', 'Fuller', 'Soto', 'Mccoy', 'Welch', 'Chen', 'Schultz', 'Walters', 'Reid', 'Fields', 'Walsh', 'Little', 'Fowler', 'Bowman', 'Davidson', 'May', 'Day', 'Schneider', 'Newman', 'Brewer', 'Lucas', 'Holland', 'Wong', 'Banks', 'Santos', 'Curtis', 'Pearson', 'Delgado', 'Valdez', 'Pena', 'Rios', 'Douglas', 'Sandoval', 'Barrett', 'Hopkins', 'Keller', 'Guerrero', 'Stanley', 'Bates', 'Alvarado', 'Beck', 'Ortega', 'Wade', 'Estrada', 'Contreras', 'Barnett', 'Caldwell', 'Santiago', 'Lambert', 'Powers', 'Chambers', 'Nunez', 'Craig', 'Leonard', 'Lowe', 'Rhodes', 'Byrd', 'Gregory', 'Shelton', 'Frazier', 'Becker', 'Maldonado', 'Fleming', 'Vega', 'Sutton', 'Cohen', 'Jennings', 'Parks', 'Mcdaniel', 'Watts', 'Barker', 'Norris', 'Vaughn', 'Vazquez', 'Holt', 'Schwartz', 'Steele', 'Benson', 'Neal', 'Dominguez', 'Horton', 'Terry', 'Wolfe', 'Hale', 'Lyons', 'Graves', 'Haynes', 'Miles', 'Park', 'Warner', 'Padilla', 'Bush', 'Thornton', 'Mccarthy', 'Mann', 'Zimmerman', 'Erickson', 'Fletcher', 'Mckinney', 'Page', 'Dawson', 'Joseph', 'Marquez', 'Reeves', 'Klein', 'Espinoza', 'Baldwin', 'Moran', 'Love', 'Robbins', 'Higgins', 'Ball', 'Cortez', 'Le', 'Griffith', 'Bowen', 'Sharp', 'Cummings', 'Ramsey', 'Hardy', 'Swanson', 'Barber', 'Acosta', 'Luna', 'Chandler', 'Blair', 'Daniel', 'Cross', 'Simon', 'Dennis', 'Oconnor', 'Quinn', 'Gross', 'Navarro', 'Moss', 'Fitzgerald', 'Doyle', 'Mclaughlin', 'Rojas', 'Rodgers', 'Stevenson', 'Singh', 'Yang', 'Figueroa', 'Harmon', 'Newton', 'Paul', 'Manning', 'Garner', 'Mcgee', 'Reese', 'Francis', 'Burgess', 'Adkins', 'Goodman', 'Curry', 'Brady', 'Christensen', 'Potter', 'Walton', 'Goodwin', 'Mullins', 'Molina', 'Webster', 'Fischer', 'Campos', 'Avila', 'Sherman', 'Todd', 'Chang', 'Blake', 'Malone', 'Wolf', 'Hodges', 'Juarez', 'Gill', 'Farmer', 'Hines', 'Gallagher', 'Duran', 'Hubbard', 'Cannon', 'Miranda', 'Wang', 'Saunders', 'Tate', 'Mack', 'Hammond', 'Carrillo', 'Townsend', 'Wise', 'Ingram', 'Barton', 'Mejia', 'Ayala', 'Schroeder', 'Hampton', 'Rowe', 'Parsons', 'Frank', 'Waters', 'Strickland', 'Osborne', 'Maxwell', 'Chan', 'Deleon', 'Norman', 'Harrington', 'Casey', 'Patton', 'Logan', 'Bowers', 'Mueller', 'Glover', 'Floyd', 'Hartman', 'Buchanan', 'Cobb', 'French', 'Kramer', 'Mccormick', 'Clarke', 'Tyler', 'Gibbs', 'Moody', 'Conner', 'Sparks', 'Mcguire', 'Leon', 'Bauer', 'Norton', 'Pope', 'Flynn', 'Hogan', 'Robles', 'Salinas', 'Yates', 'Lindsey', 'Lloyd', 'Marsh', 'Mcbride', 'Owen', 'Solis', 'Pham', 'Lang', 'Pratt', 'Lara', 'Brock', 'Ballard', 'Trujillo', 'Shaffer', 'Drake', 'Roman', 'Aguirre', 'Morton', 'Stokes', 'Lamb', 'Pacheco', 'Patrick', 'Cochran', 'Shepherd', 'Cain', 'Burnett', 'Hess', 'Li', 'Cervantes', 'Olsen', 'Briggs', 'Ochoa', 'Cabrera', 'Velasquez', 'Montoya', 'Roth', 'Meyers', 'Cardenas', 'Fuentes', 'Weiss', 'Wilkins', 'Hoover', 'Nicholson', 'Underwood', 'Short', 'Carson', 'Morrow', 'Colon', 'Holloway', 'Summers', 'Bryan', 'Petersen', 'Mckenzie', 'Serrano', 'Wilcox', 'Carey', 'Clayton', 'Poole', 'Calderon', 'Gallegos', 'Greer', 'Rivas', 'Guerra', 'Decker', 'Collier', 'Wall', 'Whitaker', 'Bass', 'Flowers', 'Davenport', 'Conley', 'Houston', 'Huff', 'Copeland', 'Hood', 'Monroe', 'Massey', 'Roberson', 'Combs', 'Franco', 'Larsen', 'Pittman', 'Randall', 'Skinner', 'Wilkinson', 'Kirby', 'Cameron', 'Bridges', 'Anthony', 'Richard', 'Kirk', 'Bruce', 'Singleton', 'Mathis', 'Bradford', 'Boone', 'Abbott', 'Charles', 'Allison', 'Sweeney', 'Atkinson', 'Horn', 'Jefferson', 'Rosales', 'York', 'Christian', 'Phelps', 'Farrell', 'Castaneda', 'Nash', 'Dickerson', 'Bond', 'Wyatt', 'Foley', 'Chase', 'Gates', 'Vincent', 'Mathews', 'Hodge', 'Garrison', 'Trevino', 'Villarreal', 'Heath', 'Dalton', 'Valencia', 'Callahan', 'Hensley', 'Atkins', 'Huffman', 'Roy', 'Boyer', 'Shields', 'Lin', 'Hancock', 'Grimes', 'Glenn', 'Cline', 'Delacruz', 'Camacho', 'Dillon', 'Parrish', 'Oneill', 'Melton', 'Booth', 'Kane', 'Berg', 'Harrell', 'Pitts', 'Savage', 'Wiggins', 'Brennan', 'Salas', 'Marks', 'Russo', 'Sawyer', 'Baxter', 'Golden', 'Hutchinson', 'Liu', 'Walter', 'Mcdowell', 'Wiley', 'Rich', 'Humphrey', 'Johns', 'Koch', 'Suarez', 'Hobbs', 'Beard', 'Gilmore', 'Ibarra', 'Keith', 'Macias', 'Khan', 'Andrade', 'Ware', 'Stephenson', 'Henson', 'Wilkerson', 'Dyer', 'Mcclure', 'Blackwell', 'Mercado', 'Tanner', 'Eaton', 'Clay', 'Barron', 'Beasley', 'Oneal', 'Small', 'Preston', 'Wu', 'Zamora', 'Macdonald', 'Vance', 'Snow', 'Mcclain', 'Stafford', 'Orozco', 'Barry', 'English', 'Shannon', 'Kline', 'Jacobson', 'Woodard', 'Huang', 'Kemp', 'Mosley', 'Prince', 'Merritt', 'Hurst', 'Villanueva', 'Roach', 'Nolan', 'Lam', 'Yoder', 'Mccullough', 'Lester', 'Santana', 'Valenzuela', 'Winters', 'Barrera', 'Orr', 'Leach', 'Berger', 'Mckee', 'Strong', 'Conway', 'Stein', 'Whitehead', 'Bullock', 'Escobar', 'Knox', 'Meadows', 'Solomon', 'Velez', 'Odonnell', 'Kerr', 'Stout', 'Blankenship', 'Browning', 'Kent', 'Lozano', 'Bartlett', 'Pruitt', 'Buck', 'Barr', 'Gaines', 'Durham', 'Gentry', 'Mcintyre', 'Sloan', 'Rocha', 'Melendez', 'Herman', 'Sexton', 'Moon', 'Hendricks', 'Rangel', 'Stark', 'Lowery', 'Hardin', 'Hull', 'Sellers', 'Ellison', 'Calhoun', 'Gillespie', 'Mora', 'Knapp', 'Mccall', 'Morse', 'Dorsey', 'Weeks', 'Nielsen', 'Livingston', 'Leblanc', 'Mclean', 'Bradshaw', 'Glass', 'Middleton', 'Buckley', 'Schaefer', 'Frost', 'Howe', 'House', 'Mcintosh', 'Ho', 'Pennington', 'Reilly', 'Hebert', 'Mcfarland', 'Hickman', 'Noble', 'Spears', 'Conrad', 'Arias', 'Galvan', 'Velazquez', 'Huynh', 'Frederick', 'Randolph', 'Cantu', 'Fitzpatrick', 'Mahoney', 'Peck', 'Villa', 'Michael', 'Donovan', 'Mcconnell', 'Walls', 'Boyle', 'Mayer', 'Zuniga', 'Giles', 'Pineda', 'Pace', 'Hurley', 'Mays', 'Mcmillan', 'Crosby', 'Ayers', 'Case', 'Bentley', 'Shepard', 'Everett', 'Pugh', 'David', 'Mcmahon', 'Dunlap', 'Bender', 'Hahn', 'Harding', 'Acevedo', 'Raymond', 'Blackburn', 'Duffy', 'Landry', 'Dougherty', 'Bautista', 'Shah', 'Potts', 'Arroyo', 'Valentine', 'Meza', 'Gould', 'Vaughan', 'Fry', 'Rush', 'Avery', 'Herring', 'Dodson', 'Clements', 'Sampson', 'Tapia', 'Bean', 'Lynn', 'Crane', 'Farley', 'Cisneros', 'Benton', 'Ashley', 'Mckay', 'Finley', 'Best', 'Blevins', 'Friedman', 'Moses', 'Sosa', 'Blanchard', 'Huber', 'Frye', 'Krueger', 'Bernard', 'Rosario', 'Rubio', 'Mullen', 'Benjamin', 'Haley', 'Chung', 'Moyer', 'Choi', 'Horne', 'Yu', 'Woodward', 'Ali', 'Nixon', 'Hayden', 'Rivers', 'Estes', 'Mccarty', 'Richmond', 'Stuart', 'Maynard', 'Brandt', 'Oconnell', 'Hanna', 'Sanford', 'Sheppard', 'Church', 'Burch', 'Levy', 'Rasmussen', 'Coffey', 'Ponce', 'Faulkner', 'Donaldson', 'Schmitt', 'Novak', 'Costa', 'Montes', 'Booker', 'Cordova', 'Waller', 'Arellano', 'Maddox', 'Mata', 'Bonilla', 'Stanton', 'Compton', 'Kaufman', 'Dudley', 'Mcpherson', 'Beltran', 'Dickson', 'Mccann', 'Villegas', 'Proctor', 'Hester', 'Cantrell', 'Daugherty', 'Cherry', 'Bray', 'Davila', 'Rowland', 'Madden', 'Levine', 'Spence', 'Good', 'Irwin', 'Werner', 'Krause', 'Petty', 'Whitney', 'Baird', 'Hooper', 'Pollard', 'Zavala', 'Jarvis', 'Holden', 'Haas', 'Hendrix', 'Mcgrath', 'Bird', 'Lucero', 'Terrell', 'Riggs', 'Joyce', 'Mercer', 'Rollins', 'Galloway', 'Duke', 'Odom', 'Andersen', 'Downs', 'Hatfield', 'Benitez', 'Archer', 'Huerta', 'Travis', 'Mcneil', 'Hinton', 'Zhang', 'Hays', 'Mayo', 'Fritz', 'Branch', 'Mooney', 'Ewing', 'Ritter', 'Esparza', 'Frey', 'Braun', 'Gay', 'Riddle', 'Haney', 'Kaiser', 'Holder', 'Chaney', 'Mcknight', 'Gamble', 'Vang', 'Cooley', 'Carney', 'Cowan', 'Forbes', 'Ferrell', 'Davies', 'Barajas', 'Shea', 'Osborn', 'Bright', 'Cuevas', 'Bolton', 'Murillo', 'Lutz', 'Duarte', 'Kidd', 'Key', 'Cooke']
 
@@ -25,24 +30,17 @@ const female_names_list = ['Mary', 'Patricia', 'Linda', 'Barbara', 'Elizabeth', 
 
 const company_names = ['Wave', 'Apex', 'Link', 'Sphere', 'Code', 'Craft', 'Innova', 'Digital Nexus', 'Tech', 'Pulse', 'Cyber', 'Peak', 'Virtuo', 'Inno', 'Sync', 'Fusion', 'Forge', 'Labs', 'Infinite', 'Byte', 'Logic', 'Research']
 
-const election_types = [
-    { label: "AGM", type: RESPONSE_TYPE.PREFERENCE },
-    { label: "State Election", type: RESPONSE_TYPE.PREFERENCE },
-    { label: "Federal Election", type: RESPONSE_TYPE.PREFERENCE },
-    { label: "Referendum", type: RESPONSE_TYPE.RANKING },
-    { label: "Plebiscite", type: RESPONSE_TYPE.YES_NO },
-    { label: "Poll", type: RESPONSE_TYPE.YES_NO }
-]
-
 const ballot_types = [
-    { label: "Federal", type: RESPONSE_TYPE.PREFERENCE },
-    { label: "Referndum", type: RESPONSE_TYPE.YES_NO },
+    { label: "2024/2025 EXECUTIVE COMMITTEE ELECTIONS", type: RESPONSE_TYPE.PREFERENCE },
+    { label: "Referendum", type: RESPONSE_TYPE.YES_NO },
     { label: "Poll", type: RESPONSE_TYPE.YES_NO },
     { label: "Poll", type: RESPONSE_TYPE.PREFERENCE },
     { label: "Local", type: RESPONSE_TYPE.PREFERENCE },
-    { label: "Camps", type: RESPONSE_TYPE.PREFERENCE },
-    { label: "General", type: RESPONSE_TYPE.PREFERENCE }
+    { label: "Campus Representative", type: RESPONSE_TYPE.PREFERENCE },
+    { label: "General", type: RESPONSE_TYPE.PREFERENCE },
+    { label: "General Representative", type: RESPONSE_TYPE.PREFERENCE }
 ]
+
 
 const randFirstName = () => {
     if (randBool()) {
@@ -65,12 +63,41 @@ const randCompany = () => {
     return company_names[randInt(0, company_names.length)] + " " + company_names[randInt(0, company_names.length)]
 }
 
-const randElection = () => {
-    return randPick(election_types)
+const randElection = (owner: ORGANISATION_OWNER, params: any) => {
+    let election;
+    switch (owner) {
+        case ORGANISATION_OWNER.GOVERMENT:
+            election = randPick([{ label: ":this_year Federal Election" },
+            { label: ":this_year State Election" },
+            { label: ":this_year Referendum" }]);
+            return applyParams(election.label, params);
+        case ORGANISATION_OWNER.PUBLIC:
+            election = randPick([{ label: ":this_year AGM" },
+            { label: ":next_year Merger Poll" },
+            { label: ":this_year Referendum" }]);
+            return applyParams(election.label, params);
+        case ORGANISATION_OWNER.PRIVATE:
+            election = randPick([{ label: ":this_year/:next_year EXECUTIVE COMMITTEE ELECTIONS" },
+            { label: ":next_year Student Guild Elections" },]);
+            return applyParams(election.label, params);
+    }
+
 }
 
 const randBallot = () => {
     return randPick(ballot_types)
+}
+
+const applyParams = (template: string, params: any) => {
+    params['rand_int'] = randInt(1e5, 1e6);
+    if (template.includes("|")) {
+        const options = template.split("|");
+        template = randPick(options)
+    }
+    for (const key of Object.keys(params)) {
+        template = template.replace(`:${key}`, params[key]);
+    }
+    return template
 }
 
 const promiseAll = <T = any>(count: number, func: (index: number) => Promise<T>): Promise<Array<T>> => {
@@ -105,12 +132,12 @@ export async function main() {
 
     console.log("Admin created")
 
-    for (let o = 0; o < 5; o++) {
+    for (let o = 0; o < 10; o++) {
 
 
         const org = await organisationRepo.save({
             label: randCompany(),
-            owner: 'PRIVATE',
+            owner: randEnum(ORGANISATION_OWNER),
             country: 'AU'
         })
         console.log("Org created")
@@ -118,10 +145,7 @@ export async function main() {
         console.log(org)
 
 
-        await promiseAll(randInt(5, 30), async () =>
-
-            electionSeeder.seedElection(org.id)
-        );
+        await promiseAll(randInt(5, 30), () => electionSeeder.seedElection(org));
     }
 
     console.log('destroy')
@@ -191,6 +215,11 @@ export class ElectionSeeder {
     @dependency
     voterRepo: VoterRepository;
 
+
+    @dependency
+    voterTagRepo: VoterTagRepository;
+
+
     @dependency
     candidateRepo: CandidateRepository;
 
@@ -201,31 +230,65 @@ export class ElectionSeeder {
     runningRepo: RunningRepository;
 
 
-    seedElection = async (organisation_id: string) => {
-        const label = "";
+    seedElection = async (organisation: IOrganisation) => {
 
         const status = randEnum(ELECTION_STATUS) as ELECTION_STATUS;
 
         const times = getTimes(status);
+        const params = {
+            this_year: times.voting_open_at.getFullYear(),
+            next_year: times.voting_open_at.getFullYear() + 1,
+        }
+
+        const label = randElection(organisation.owner, params);
+
+        console.log("seed election...")
         const election = await this.electionRepository.save({
             status: status,
             label: label,
-            organisation_id: organisation_id,
+            organisation_id: organisation.id,
+            allow_update_vote: randBool(),
             ...times,
             mode: ELECTION_MODE.SCHEDULE
         })
+        console.log("election done.")
 
-        const voters = await promiseAll(randInt(10, 1000), () => this.voterRepo.save({
-            first_name: randFirstName(),
-            last_name: randLastName(),
-            email: "person@example.com",
-            election_id: election.id
-        }))
-        const ballots = await promiseAll(randInt(1, 3), (i) => this.seedBallots(election.id, i));
+
+        const setTags: Array<IBaseTag> = organisation.owner === ORGANISATION_OWNER.PRIVATE ? [
+            { key: "campus", value: "north|east|south|west" },
+            { key: "student_id", value: ":rand_int" },
+        ] : [];
+
+        console.log("seed voters...")
+        const voters = await promiseAll(randInt(10, 1000), async (i) => {
+            if (i % 100 === 0) console.log('create voter', i)
+            const voter = await this.voterRepo.save({
+                first_name: randFirstName(),
+                last_name: randLastName(),
+                email: "person@example.com",
+                election_id: election.id,
+                status: VOTER_STATUS.INACTIVE
+            });
+
+
+            if (setTags && setTags.length > 0) {
+                setTags.map(t => this.voterTagRepo.save({ key: t.key, value: applyParams(t.value, params), voter_id: voter.id }))
+            }
+
+            return voter;
+        })
+        console.log("voters done.");
+        console.log("seed ballots ...")
+
+        const ballots = await promiseAll(randInt(1, 3), (i) =>
+            this.seedBallots(election.id, setTags.find(t => t.key === 'campus') && randBool() ? "campus" : undefined)
+        );
+        console.log("ballots done.")
+
         return election;
     }
 
-    seedBallots = async (election_id: string, index: number) => {
+    seedBallots = async (election_id: string, silo_by_tag?: string) => {
 
         const eballot = randBallot();
 
@@ -234,7 +297,8 @@ export class ElectionSeeder {
             label: eballot.label,
             response_type: eballot.type,
             shuffle_candidates: Math.random() < 0.7,
-            display_order: randInt(0, 10)
+            display_order: randInt(0, 10),
+            silo_by_tag
         });
 
         if (ballot.response_type === RESPONSE_TYPE.YES_NO) {
@@ -249,13 +313,20 @@ export class ElectionSeeder {
         if (randBool() || candidates.length === 0) {
             // 50/50 chance to create new candidates or reuse from existing
             // always create on the first ballot
-            await promiseAll(randInt(5, 30), () => this.candidateRepo.save({
+            const candidateCount = randInt(5, 30);
+            await promiseAll(candidateCount, () => this.candidateRepo.save({
                 election_id: election_id,
                 first_name: randFirstName(),
                 last_name: randLastName(),
                 email: randFirstName() + '@example.com',
                 status: randPick([CANDIDATE_STATUS.APPROVED, CANDIDATE_STATUS.NOMINATED, CANDIDATE_STATUS.REJECTED])
             }).then(c => this.runningRepo.getOrCreateRunning(c.id, ballot.id)));
+
+            if (randBool()) {
+                const min_ranking = randInt(1, candidateCount / 2);
+                const max_ranking = randInt(min_ranking + 1, candidateCount);
+                await this.ballotRepo.update(ballot.id, { min_ranking, max_ranking });
+            }
         }
         else {
 
@@ -264,7 +335,6 @@ export class ElectionSeeder {
                 await this.runningRepo.getOrCreateRunning(candidate.id, ballot.id);
             }
         }
-
         return ballot;
 
     }

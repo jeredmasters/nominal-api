@@ -4,16 +4,17 @@ import { ForeignKey } from "../../util/foreign-key";
 import { VoterEntity } from "../voter.repo/voter.entity";
 import { IBaseUnsaved } from "../base-repo";
 import { BaseEntity2 } from "../base-entity";
+import { IBaseTag } from "../../domain/voter";
+
+
 
 export interface IVoterTag extends IUnsavedVoterTag {
   id: string;
   created_at: Date;
 }
 
-export interface IUnsavedVoterTag extends IBaseUnsaved {
+export interface IUnsavedVoterTag extends IBaseUnsaved, IBaseTag {
   voter_id: string;
-  key: string;
-  value: string;
 }
 
 @Entity("voter_tags")

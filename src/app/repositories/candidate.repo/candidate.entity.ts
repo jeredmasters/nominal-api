@@ -3,6 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, U
 import { ForeignKey } from "../../util/foreign-key";
 import { IBaseUnsaved } from "../base-repo";
 import { ElectionEntity } from "../election.repo/election.entity";
+import { BaseEntity2 } from "../base-entity";
 
 export interface ICandidate extends IUnsavedCandidate {
   id: string;
@@ -28,7 +29,7 @@ export interface IUnsavedCandidate extends IBaseUnsaved {
 }
 
 @Entity("candidates")
-export class CandidateEntity extends BaseEntity implements ICandidate {
+export class CandidateEntity extends BaseEntity2 implements ICandidate {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

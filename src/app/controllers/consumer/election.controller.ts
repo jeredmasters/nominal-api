@@ -9,6 +9,7 @@ import { RunningRepository } from "../../repositories/running.repo";
 import { errorToResponse } from "../util";
 import { BallotRepository } from "../../repositories/ballot.repo";
 import { EnrollmentService } from "../../services/enrollment.service";
+import { CandidateRepository } from "../../repositories/candidate.repo";
 
 
 export class ElectionController {
@@ -17,6 +18,9 @@ export class ElectionController {
 
   @dependency
   private readonly ballotRepo: BallotRepository;
+
+  @dependency
+  private readonly candidateRepo: CandidateRepository;
 
   @dependency
   private readonly enrollmentService: EnrollmentService;
@@ -63,6 +67,33 @@ export class ElectionController {
 
       return new HttpResponseOK(
         ballots
+      );
+    } catch (err) {
+      return errorToResponse(err)
+    }
+  }
+
+  @Get("/:id/candidates")
+  async getCandidates({ request, user }: Context<IVoter>) {
+    try {
+      const { id } = request.params;
+
+      if (!await this.enrollmentService.isEnrolled(user, id)) {
+        throw new InternalError({
+          code: "not_enrolled",
+          func: "getCandidates",
+          type: ERROR_TYPE.NOT_FOUND,
+          meta: {
+            voter_id: user.id,
+            election_id: id
+          }
+        });
+      }
+
+      const candidates = await this.candidateRepo.getByElectionId(id);
+
+      return new HttpResponseOK(
+        candidates
       );
     } catch (err) {
       return errorToResponse(err)

@@ -20,6 +20,7 @@ import { ResponseController } from "./response.controller";
 import { EMAIL_TOKEN_STATUS } from "../../repositories/email-token.repo/email-token.entity";
 import { EVENT_PRIMARY } from "../../repositories/event_log.repo/event-log.entity";
 import { BallotController } from "./ballot.controller";
+import { TicketController } from "./ticket.controller";
 
 @Hook((ctx) => (response) => {
   response.setHeader(
@@ -114,6 +115,7 @@ export class AuthController {
     controller("/elections", ElectionController),
     controller("/candidates", CandidateController),
     controller("/responses", ResponseController),
+    controller("/tickets", TicketController),
   ];
 
   @Get("/status")

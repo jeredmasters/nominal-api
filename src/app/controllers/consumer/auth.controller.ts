@@ -8,7 +8,7 @@ import { EventLogRepository } from "../../repositories/event_log.repo";
 import { EVENT_PRIMARY } from "../../repositories/event_log.repo/event-log.entity";
 import { errorToResponse } from "../util";
 
-export class AuthController {
+export class __AuthController {
   @dependency
   emailTokenRepository: EmailTokenRepository;
 

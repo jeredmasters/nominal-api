@@ -3,6 +3,7 @@ import { ApiTokenRepository } from "../repositories/api-token.repo";
 import { VoterRepository } from "../repositories/voter.repo";
 import { ERROR_TYPE, InternalError } from "../domain/error";
 import { uuidv4 } from "../util/rand";
+import { VOTER_STATUS } from "../repositories/voter.repo/voter.entity";
 
 export class AuthService {
     @dependency
@@ -24,7 +25,9 @@ export class AuthService {
         return await this.voterRepository.getByIdOrThrow(apiToken.voter_id);
     }
 
-    create(voter_id: string, email_token_id?: string) {
+    async create(voter_id: string, email_token_id?: string) {
+        await this.voterRepository.setStatus(voter_id, VOTER_STATUS.VIEWED)
+
         return this.apiTokenRepository.save({
             public_key: "pk_" + uuidv4(),
             secret_key: "sk_" + uuidv4(),

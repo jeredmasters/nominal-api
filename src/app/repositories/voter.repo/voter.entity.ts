@@ -6,6 +6,13 @@ import { ElectionEntity } from "../election.repo/election.entity";
 import { VoterDigestEntity } from "../voter_digest.repo/voter_digest.entity";
 import { BaseEntity2 } from "../base-entity";
 
+export enum VOTER_STATUS {
+  INACTIVE = "INACTIVE",
+  VIEWED = "VIEWED",
+  PARTIAL_SUBMIT = "PARTIAL_SUBMIT",
+  SUBMITTED = "SUBMITTED"
+}
+
 export interface IVoter extends IUnsavedVoter {
   id: string;
   created_at: Date;
@@ -19,6 +26,7 @@ export interface IUnsavedVoter extends IBaseUnsaved {
   last_name: string;
   preferred_name?: string;
   email: string;
+  status: VOTER_STATUS;
 }
 
 @Entity("voters")
@@ -52,4 +60,7 @@ export class VoterEntity extends BaseEntity2 implements IVoter {
 
   @Column()
   email: string;
+
+  @Column()
+  status: VOTER_STATUS;
 }

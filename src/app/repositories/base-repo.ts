@@ -53,6 +53,10 @@ export class BaseRepo<TEntity extends BaseEntity2 & TSaved, TSaved extends ISave
         return this.entity.save(unsaved as any);
     }
 
+    async update(id: string, unsaved: Partial<TUnsaved>): Promise<TSaved> {
+        return this.entity.update(id, unsaved as any);
+    }
+
     createQueryBuilder(): SelectQueryBuilder<TEntity> {
         return this.entity.createQueryBuilder(this.alias);
     }

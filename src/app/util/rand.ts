@@ -25,9 +25,9 @@ export const randStr = (length: number = 10) => {
 export const randPick = <T = any>(arr: Array<T>): T => {
   return arr[randInt(0, arr.length)];
 }
-type StringEnum = { [key: string]: string };
-export const randEnum = (e: StringEnum) => {
-  return randPick(Object.values(e));
+type StringEnum<T = string> = { [key: string]: T };
+export const randEnum = <T = any, E = StringEnum<T>>(e: E): T => {
+  return randPick(Object.values(e as any));
 }
 
 export const sleep = <T = any>(ms: number, v?: T) => {

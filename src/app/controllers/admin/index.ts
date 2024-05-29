@@ -30,6 +30,8 @@ import { voterTagController } from "./voter_tag.controller";
 import { ProfileController } from "./profile.controller";
 import { EmailBatchController } from "./email-batch.controller";
 import { VoterFilterController } from "./voter_filter.controller";
+import { TicketController } from "./ticket.controller";
+import { TicketMessageController } from "./ticket-message.controller";
 
 @Hook((ctx) => (response) => {
   response.setHeader(
@@ -117,7 +119,9 @@ export class AuthController {
     controller('/ballots', BallotController),
     controller("/admin-users", AdminUserController),
     controller("/profiles", ProfileController),
-    controller('/voter-filters', VoterFilterController)
+    controller('/voter-filters', VoterFilterController),
+    controller('/tickets', TicketController),
+    controller('/ticket-messages', TicketMessageController)
   ];
 
   @Get("/status")

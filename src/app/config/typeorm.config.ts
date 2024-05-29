@@ -10,5 +10,5 @@ export const typeOrmConfig = {
     database: env.dbName(),
     synchronize: false,
     migrations: ["dist/migrations/**/*{.ts,.js}"],
-    subscribers: ["dist/subscriber/**/*{.ts,.js}"],
+    subscribers: ["dist/subscriber/**/*{.ts,.js}"]
 };

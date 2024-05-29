@@ -1,13 +1,15 @@
 import { Context, Get, Hook, HttpResponseOK, HttpResponseUnauthorized, Post, Put } from "@foal/core";
 import { dependency } from "@foal/core/lib/core/service-manager";
 
-import { IVoter } from "../../repositories/voter.repo/voter.entity";
+import { IVoter, VOTER_STATUS } from "../../repositories/voter.repo/voter.entity";
 import { ERROR_TYPE, InternalError } from "../../domain/error";
 import { RunningRepository } from "../../repositories/running.repo";
 import { errorToResponse } from "../util";
 import { BallotRepository } from "../../repositories/ballot.repo";
 import { EnrollmentService } from "../../services/enrollment.service";
 import { randInt } from "../../util/rand";
+import { ResponseRepository } from "../../repositories/response.repo";
+import { VoterRepository } from "../../repositories/voter.repo";
 
 
 export class BallotController {
@@ -19,6 +21,12 @@ export class BallotController {
 
   @dependency
   private readonly runningRepo: RunningRepository;
+
+  @dependency
+  private readonly responseRepo: ResponseRepository;
+
+  @dependency
+  private readonly voterRepo: VoterRepository;
 
   @Get("")
   async getRules({ request, user }: Context<IVoter>) {
@@ -94,8 +102,36 @@ export class BallotController {
 
       const eligible = await this.enrollmentService.isEligible(voter, ballot);
 
-      return new HttpResponseOK(
-      );
+      if (!eligible) {
+        throw new InternalError({
+          code: "ballot_id_not_found",
+          func: "postNewResponse",
+          type: ERROR_TYPE.NOT_FOUND,
+          context: ballot_id
+        });
+      }
+
+      const saved = await this.responseRepo.save({
+        ballot_id: ballot.id,
+        value: request.body,
+        voter_id: voter.id
+      })
+
+      const ballots = await this.enrollmentService.getEligibleBallots(voter);
+      const responses = await this.responseRepo.getByVoterId(voter.id)
+
+      let complete = true;
+      for (const b of ballots) {
+        const response = responses.find(r => r.ballot_id === b.id);
+        if (response === undefined) {
+          complete = false;
+          break;
+        }
+      }
+
+      await this.voterRepo.setStatus(voter.id, complete ? VOTER_STATUS.SUBMITTED : VOTER_STATUS.PARTIAL_SUBMIT);
+
+      return new HttpResponseOK(saved);
     }
     catch (err) {
       return errorToResponse(err);
